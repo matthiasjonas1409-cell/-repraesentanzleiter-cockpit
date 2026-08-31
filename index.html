@@ -3120,25 +3120,174 @@ initLogin();
 </script>
 
 
-<!-- Umsatzstruktur-Erweiterung -->
-<div id="umsatzstrukturPanel" style="margin:20px;padding:20px;background:#fff;border-radius:16px">
-<h2>🎯 Umsatzstruktur</h2><div id="umsatzstrukturResult"></div>
-</div>
+
+<!-- KORRIGIERTE UMSATZSTRUKTUR -->
+<style>
+#umsatzstrukturPanel{
+  margin-top:16px;background:var(--panel);border:1px solid var(--line);
+  border-radius:14px;padding:18px
+}
+.umsatzRule{color:var(--muted);margin:0 0 16px}
+.umsatzGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.umsatzCard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px}
+.umsatzCard strong{display:block;font-size:20px;margin-top:6px}
+.umsatzCheck{margin-top:14px;padding:14px;border-radius:10px;background:#101318;border-left:3px solid var(--gold)}
+.umsatzCheck.ok{border-left-color:var(--green)}
+.umsatzCheck.bad{border-left-color:var(--red)}
+.umsatzList{margin:12px 0 0;padding:0;list-style:none}
+.umsatzList li{padding:8px 0;border-bottom:1px solid var(--line)}
+@media(max-width:800px){.umsatzGrid{grid-template-columns:1fr 1fr}}
+</style>
+
+<section id="umsatzstrukturPanel">
+  <h2>🎯 Umsatzstruktur & Aufteilung</h2>
+  <p class="umsatzRule" id="umsatzRuleText">Die Aufteilung wird automatisch anhand deiner Position und des aktuell ausgewählten Monats berechnet.</p>
+  <div class="umsatzGrid" id="umsatzstrukturCards"></div>
+  <div id="umsatzstrukturChecks"></div>
+</section>
+
 <script>
 (function(){
-const n=v=>Number(v)||0,fmt=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n(v));
-function v(a){for(const id of a){let e=document.getElementById(id);if(e)return n(e.value)}return 0}
-function r(){let e=document.getElementById('position')||document.getElementById('myPosition'),p=String(e?e.value:'').toLowerCase();return /trainee|beraterassistent|juniorberater|seniorberater/.test(p)?'100/70':p.includes('teamleiter')?'40/70':'40/70/90'}
-window.renderUmsatzstruktur=function(){
-let b=document.getElementById('umsatzstrukturResult');if(!b)return;
-let a=[['Eigenvolumen',v(['eigenUmsatz','eigenRevenue','revenueEigen'])],['Team Zorn',v(['zornUmsatz','revenueZorn'])],['Team Biewer',v(['biewerUmsatz','revenueBiewer'])],['Team Deckers',v(['deckersUmsatz','revenueDeckers'])]].map(x=>({name:x[0],value:x[1]})),t=a.reduce((s,x)=>s+x.value,0),q=r();
-if(!t){b.innerHTML='Bitte Umsätze eintragen.';return} let s=[...a].sort((x,y)=>y.value-x.value),p1=s[0].value/t,p2=(s[0].value+s[1].value)/t,p3=(s[0].value+s[1].value+s[2].value)/t;
-let h=`<p><b>Regel ${q}</b> · Gesamt: ${fmt(t)}</p><p>${p1<=.4?'✅':'❌'} Stärkster Bereich: ${s[0].name} ${(p1*100).toFixed(1)} % / max. 40 %</p>`;
-if(q!=='100/70')h+=`<p>${p2<=.7?'✅':'❌'} Zwei stärkste: ${(p2*100).toFixed(1)} % / max. 70 %</p>`;
-if(q==='40/70/90')h+=`<p>${p3<=.9?'✅':'❌'} Drei stärkste: ${(p3*100).toFixed(1)} % / max. 90 % · Rest ${((1-p3)*100).toFixed(1)} %</p>`;
-if(q==='100/70'){let x=Math.max(a[1].value,a[2].value,a[3].value)/t;h+=`<p>${x<=.7?'✅':'❌'} Stärkster Teambereich: ${(x*100).toFixed(1)} % / max. 70 %</p>`}
-b.innerHTML=h};
-document.addEventListener('input',()=>setTimeout(renderUmsatzstruktur,0));document.addEventListener('change',()=>setTimeout(renderUmsatzstruktur,0));setTimeout(renderUmsatzstruktur,500);
+  const euroUS = n => new Intl.NumberFormat("de-DE",{
+    style:"currency",currency:"EUR",maximumFractionDigits:0
+  }).format(Number(n)||0);
+
+  function currentData(){
+    if(typeof db==="undefined") return null;
+    const month = (typeof getGlobalMonth==="function" ? getGlobalMonth() :
+      (document.getElementById("dashMonth")||{}).value);
+    if(!month) return null;
+    if(typeof getMonthData==="function") return {month,data:getMonthData(month)};
+    return {month,data:(db.months||{})[month]||null};
+  }
+
+  function getRule(){
+    if(typeof db==="undefined" || typeof getPosition!=="function") return "40/70/90";
+    const pos=getPosition(db.myPosition||"");
+    const name=String((pos&&pos.name)||db.myPosition||"").toLowerCase();
+
+    if(["trainee","beraterassistent","juniorberater","seniorberater"].some(x=>name.includes(x))){
+      return "100/70";
+    }
+    if(name.includes("teamleiter")) return "40/70";
+    return "40/70/90";
+  }
+
+  function status(ok,text){
+    return '<div class="umsatzCheck '+(ok?"ok":"bad")+'">'+(ok?"✅ ":"❌ ")+text+'</div>';
+  }
+
+  window.renderUmsatzstruktur = function(){
+    const cards=document.getElementById("umsatzstrukturCards");
+    const checks=document.getElementById("umsatzstrukturChecks");
+    const ruleText=document.getElementById("umsatzRuleText");
+    if(!cards||!checks||typeof db==="undefined") return;
+
+    const result=currentData();
+    if(!result || !result.data){
+      cards.innerHTML="";
+      checks.innerHTML='<div class="umsatzCheck">Bitte zuerst einen Monat auswählen.</div>';
+      return;
+    }
+
+    const data=result.data;
+    const areas=[
+      {key:"eigen",name:"Eigenvolumen",value:Number(data.eigen?.umsatz||0)},
+      {key:"zorn",name:"Team Zorn",value:Number(data.zorn?.umsatz||0)},
+      {key:"biewer",name:"Team Biewer",value:Number(data.biewer?.umsatz||0)},
+      {key:"deckers",name:"Team Deckers",value:Number(data.deckers?.umsatz||0)}
+    ];
+
+    const total=areas.reduce((s,a)=>s+a.value,0);
+    const rule=getRule();
+
+    cards.innerHTML=areas.map(a=>{
+      const percent=total>0 ? a.value/total*100 : 0;
+      return '<div class="umsatzCard"><div class="label">'+a.name+'</div><strong>'+euroUS(a.value)+'</strong><div>'+percent.toFixed(1).replace(".",",")+' % vom Gesamtumsatz</div></div>';
+    }).join("");
+
+    if(total<=0){
+      ruleText.textContent="Regel "+rule+" – Trage Umsätze für den ausgewählten Monat ein. Die Prüfung aktualisiert sich automatisch.";
+      checks.innerHTML='<div class="umsatzCheck">Noch keine Umsätze im ausgewählten Monat vorhanden.</div>';
+      return;
+    }
+
+    const sorted=[...areas].sort((a,b)=>b.value-a.value);
+    const top1=sorted[0].value/total;
+    const top2=(sorted[0].value+sorted[1].value)/total;
+    const top3=(sorted[0].value+sorted[1].value+sorted[2].value)/total;
+    const teamTotal=total-data.eigen.umsatz;
+    const teamShare=teamTotal/total;
+
+    ruleText.innerHTML='<b>Aktiver Monat: '+result.month+'</b> · Regel für deine Position: <b>'+rule+'</b> · Gesamt: <b>'+euroUS(total)+'</b>';
+
+    let html='<ul class="umsatzList">';
+    if(rule==="100/70"){
+      const eigenShare=(Number(data.eigen?.umsatz||0)/total);
+      html+='<li>'+ (eigenShare<=1 ? "✅" : "❌") +' Eigenvolumen: '+(eigenShare*100).toFixed(1).replace(".",",")+' % – maximal 100 %</li>';
+      html+='<li>'+ (teamShare<=.70 ? "✅" : "❌") +' Alle Teambereiche zusammen: '+(teamShare*100).toFixed(1).replace(".",",")+' % – maximal 70 %</li>';
+      html+='</ul>';
+      html+=status(teamShare<=.70,
+        '100/70-Prüfung: Die Teambereiche liegen bei '+(teamShare*100).toFixed(1).replace(".",",")+' % von maximal 70 %.');
+    }else if(rule==="40/70"){
+      html+='<li>'+ (top1<=.40 ? "✅" : "❌") +' Größter einzelner Bereich: '+sorted[0].name+' mit '+(top1*100).toFixed(1).replace(".",",")+' % – maximal 40 %</li>';
+      html+='<li>'+ (top2<=.70 ? "✅" : "❌") +' Zwei größte Bereiche zusammen: '+(top2*100).toFixed(1).replace(".",",")+' % – maximal 70 %</li>';
+      html+='</ul>';
+      html+=status(top1<=.40 && top2<=.70,
+        '40/70-Prüfung: Ein Bereich max. 40 %, zwei Bereiche zusammen max. 70 %.');
+    }else{
+      html+='<li>'+ (top1<=.40 ? "✅" : "❌") +' Größter einzelner Bereich: '+sorted[0].name+' mit '+(top1*100).toFixed(1).replace(".",",")+' % – maximal 40 %</li>';
+      html+='<li>'+ (top2<=.70 ? "✅" : "❌") +' Zwei größte Bereiche zusammen: '+(top2*100).toFixed(1).replace(".",",")+' % – maximal 70 %</li>';
+      html+='<li>'+ (top3<=.90 ? "✅" : "❌") +' Drei größte Bereiche zusammen: '+(top3*100).toFixed(1).replace(".",",")+' % – maximal 90 %</li>';
+      html+='<li>Restliche Bereiche zusammen: '+((1-top3)*100).toFixed(1).replace(".",",")+' % – mindestens 10 %</li>';
+      html+='</ul>';
+      html+=status(top1<=.40 && top2<=.70 && top3<=.90,
+        '40/70/90-Prüfung: Die Umsatzverteilung wird automatisch anhand der vier Bereiche kontrolliert.');
+    }
+    checks.innerHTML=html;
+  };
+
+  // In die bestehende Aktualisierung einhängen, ohne vorhandene Funktionen zu ersetzen.
+  const oldUpdate = window.updateEverything;
+  if(typeof oldUpdate==="function"){
+    window.updateEverything=function(){
+      const result=oldUpdate.apply(this,arguments);
+      window.renderUmsatzstruktur();
+      return result;
+    };
+  }
+
+  const oldLoad = window.loadSectionMonth;
+  if(typeof oldLoad==="function"){
+    window.loadSectionMonth=function(){
+      const result=oldLoad.apply(this,arguments);
+      window.renderUmsatzstruktur();
+      return result;
+    };
+  }
+
+  const oldGlobalMonth = window.setGlobalMonth;
+  if(typeof oldGlobalMonth==="function"){
+    window.setGlobalMonth=function(){
+      const result=oldGlobalMonth.apply(this,arguments);
+      window.renderUmsatzstruktur();
+      return result;
+    };
+  }
+
+  document.addEventListener("input",function(e){
+    if(e.target && /^(eigen|zorn|biewer|deckers)Umsatz$/.test(e.target.id)){
+      setTimeout(window.renderUmsatzstruktur,0);
+    }
+  });
+  document.addEventListener("change",function(e){
+    if(e.target && (e.target.id==="dashboardPosition" || e.target.id==="vergMyPosition" ||
+      e.target.id==="karrierePosition" || e.target.id==="dashMonth" || e.target.id==="gesamtMonth")){
+      setTimeout(window.renderUmsatzstruktur,0);
+    }
+  });
+
+  setTimeout(window.renderUmsatzstruktur,700);
 })();
 </script>
 
