@@ -3250,33 +3250,44 @@ initLogin();
     const top1=sorted[0].value/total;
     const top2=(sorted[0].value+sorted[1].value)/total;
     const top3=(sorted[0].value+sorted[1].value+sorted[2].value)/total;
-    const teamTotal=total-Number(data.eigen?.umsatz||0);
+
+    const eigenValue=Number(data.eigen?.umsatz||0);
+    const eigenShare=eigenValue/total;
+    const teamTotal=sorted
+      .filter(a=>a.key!=="eigen")
+      .reduce((sum,a)=>sum+a.value,0);
     const teamShare=teamTotal/total;
+
+    const pct=v=>(v*100).toFixed(1).replace(".",",")+" %";
+    const ok10070 = eigenShare<=1 && teamShare<=.70;
+    const ok4070 = top1<=.40 && top2<=.70;
+    const ok407090 = top1<=.40 && top2<=.70 && top3<=.90;
 
     ruleText.innerHTML='<b>Aktiver Monat: '+result.month+'</b> · Regel für deine Position: <b>'+rule+'</b> · Gesamt: <b>'+euroUS(total)+'</b>';
 
     let html='<ul class="umsatzList">';
     if(rule==="100/70"){
-      const eigenShare=(Number(data.eigen?.umsatz||0)/total);
-      html+='<li>'+ (eigenShare<=1 ? "✅" : "❌") +' Eigenvolumen: '+(eigenShare*100).toFixed(1).replace(".",",")+' % – maximal 100 %</li>';
-      html+='<li>'+ (teamShare<=.70 ? "✅" : "❌") +' Alle Teambereiche zusammen: '+(teamShare*100).toFixed(1).replace(".",",")+' % – maximal 70 %</li>';
+      html+='<li>ℹ️ <b>Eigenvolumen:</b> '+pct(eigenShare)+' – darf bis zu 100 % des Gesamtumsatzes ausmachen.</li>';
+      html+='<li>'+ (teamShare<=.70 ? "✅" : "❌") +' <b>Alle drei Teambereiche zusammen:</b> '+pct(teamShare)+' – maximal 70 %.</li>';
+      html+='<li>'+ (eigenShare>=.30 ? "✅" : "❌") +' <b>Eigenvolumen-Anteil:</b> '+pct(eigenShare)+' – mindestens 30 %, wenn die Teambereiche zusammen auf maximal 70 % begrenzt sind.</li>';
       html+='</ul>';
-      html+=status(teamShare<=.70,
-        '100/70-Prüfung: Die Teambereiche liegen bei '+(teamShare*100).toFixed(1).replace(".",",")+' % von maximal 70 %.');
+      html+=status(ok10070,
+        '100/70-Prüfung: Eigenvolumen ist bis 100 % möglich; Team Zorn, Team Biewer und Team Deckers dürfen zusammen maximal 70 % ausmachen.');
     }else if(rule==="40/70"){
-      html+='<li>'+ (top1<=.40 ? "✅" : "❌") +' Größter einzelner Bereich: '+sorted[0].name+' mit '+(top1*100).toFixed(1).replace(".",",")+' % – maximal 40 %</li>';
-      html+='<li>'+ (top2<=.70 ? "✅" : "❌") +' Zwei größte Bereiche zusammen: '+(top2*100).toFixed(1).replace(".",",")+' % – maximal 70 %</li>';
+      html+='<li>'+ (top1<=.40 ? "✅" : "❌") +' <b>Größter einzelner Bereich:</b> '+sorted[0].name+' mit '+pct(top1)+' – maximal 40 %.</li>';
+      html+='<li>'+ (top2<=.70 ? "✅" : "❌") +' <b>Zwei größte Bereiche zusammen:</b> '+pct(top2)+' – maximal 70 %.</li>';
+      html+='<li>ℹ️ <b>Restliche zwei Bereiche zusammen:</b> '+pct(1-top2)+' – mindestens 30 %.</li>';
       html+='</ul>';
-      html+=status(top1<=.40 && top2<=.70,
-        '40/70-Prüfung: Ein Bereich max. 40 %, zwei Bereiche zusammen max. 70 %.');
+      html+=status(ok4070,
+        '40/70-Prüfung: Kein einzelner Bereich darf über 40 % liegen; die zwei stärksten Bereiche dürfen zusammen maximal 70 % ausmachen.');
     }else{
-      html+='<li>'+ (top1<=.40 ? "✅" : "❌") +' Größter einzelner Bereich: '+sorted[0].name+' mit '+(top1*100).toFixed(1).replace(".",",")+' % – maximal 40 %</li>';
-      html+='<li>'+ (top2<=.70 ? "✅" : "❌") +' Zwei größte Bereiche zusammen: '+(top2*100).toFixed(1).replace(".",",")+' % – maximal 70 %</li>';
-      html+='<li>'+ (top3<=.90 ? "✅" : "❌") +' Drei größte Bereiche zusammen: '+(top3*100).toFixed(1).replace(".",",")+' % – maximal 90 %</li>';
-      html+='<li>Restliche Bereiche zusammen: '+((1-top3)*100).toFixed(1).replace(".",",")+' % – mindestens 10 %</li>';
+      html+='<li>'+ (top1<=.40 ? "✅" : "❌") +' <b>Größter einzelner Bereich:</b> '+sorted[0].name+' mit '+pct(top1)+' – maximal 40 %.</li>';
+      html+='<li>'+ (top2<=.70 ? "✅" : "❌") +' <b>Zwei größte Bereiche zusammen:</b> '+pct(top2)+' – maximal 70 %.</li>';
+      html+='<li>'+ (top3<=.90 ? "✅" : "❌") +' <b>Drei größte Bereiche zusammen:</b> '+pct(top3)+' – maximal 90 %.</li>';
+      html+='<li>'+ ((1-top3)>=.10 ? "✅" : "❌") +' <b>Verbleibender vierter Bereich:</b> '+pct(1-top3)+' – mindestens 10 %.</li>';
       html+='</ul>';
-      html+=status(top1<=.40 && top2<=.70 && top3<=.90,
-        '40/70/90-Prüfung: Die Umsatzverteilung wird automatisch anhand der vier Bereiche kontrolliert.');
+      html+=status(ok407090,
+        '40/70/90-Prüfung: 1 Bereich max. 40 %, 2 stärkste zusammen max. 70 %, 3 stärkste zusammen max. 90 % und der vierte Bereich mindestens 10 %.');
     }
     checks.innerHTML=html;
   };
@@ -3426,3 +3437,4 @@ initLogin();
   }
 }
 </style>
+                                                                                            
