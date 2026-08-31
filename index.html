@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#090b0f">
-
 <title>Repräsentanzleiter Cockpit</title>
 
 <style>
@@ -12,31 +11,27 @@
   --bg:#090b0f;
   --panel:#171b22;
   --panel2:#101318;
+  --panel3:#202630;
   --line:#303641;
   --gold:#c9973e;
   --gold2:#f0c96b;
   --text:#f5f6f7;
   --muted:#a9afbb;
-  --red:#ff8588;
   --green:#82e39d;
-  --blue:#78b8ff;
+  --red:#ff8588;
+  --blue:#63b7ff;
 }
 
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
   background:var(--bg);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
 }
 
-button,
-input,
-select,
-textarea{
+button,input,select,textarea{
   font:inherit;
 }
 
@@ -44,506 +39,389 @@ button{
   cursor:pointer;
 }
 
-.app{
+.hidden{
+  display:none!important;
+}
+
+/* LOGIN */
+
+.login{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:20px;
+}
+
+.loginbox{
+  width:min(440px,100%);
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:28px;
+}
+
+.loginbox h1{
+  margin:0 0 8px;
+}
+
+.loginbox p{
+  color:var(--muted);
+  margin-bottom:22px;
+}
+
+/* LAYOUT */
+
+.wrap{
   max-width:1500px;
   margin:auto;
   padding:18px;
 }
 
-header{
+.top{
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
   gap:20px;
-  margin-bottom:18px;
+  margin-bottom:16px;
 }
 
-.brand small{
-  display:block;
+.eyebrow{
   color:var(--gold2);
+  letter-spacing:4px;
   font-weight:800;
-  letter-spacing:3px;
-  font-size:13px;
-  margin-bottom:4px;
+  font-size:12px;
 }
 
-.brand h1{
-  margin:0;
+h1{
+  margin:6px 0 4px;
   font-size:32px;
-  letter-spacing:.5px;
+  letter-spacing:1px;
 }
 
-.brand p{
-  margin:5px 0 0;
+.subtitle{
   color:var(--muted);
 }
 
-.header-actions{
+.actions{
   display:flex;
   gap:10px;
   flex-wrap:wrap;
 }
 
-button{
-  border:1px solid var(--line);
-  background:#252a33;
-  color:white;
-  border-radius:10px;
-  padding:12px 18px;
-  font-weight:750;
-}
+/* NAVIGATION */
 
-button:hover{
-  filter:brightness(1.12);
-}
-
-button.primary{
-  background:var(--gold);
-  color:#111;
-  border-color:var(--gold);
-}
-
-button.danger{
-  background:#31191b;
-  border-color:#693238;
-}
-
-button.success{
-  background:#173222;
-  border-color:#315f3e;
-}
-
-nav{
+.nav{
   display:flex;
   gap:8px;
-  overflow-x:auto;
-  padding-bottom:4px;
+  flex-wrap:wrap;
   margin-bottom:16px;
 }
 
-nav button{
-  white-space:nowrap;
+.nav button{
+  border:1px solid var(--line);
+  background:var(--panel3);
+  color:var(--text);
+  padding:14px 18px;
+  border-radius:10px;
+  font-weight:800;
 }
 
-nav button.active{
+.nav button.active{
   background:var(--gold);
-  color:#111;
-  border-color:var(--gold);
+  color:#17120a;
+  border-color:var(--gold2);
 }
 
-.page{
-  display:none;
+/* BUTTONS */
+
+.btn{
+  border:1px solid var(--line);
+  background:var(--panel3);
+  color:var(--text);
+  padding:13px 18px;
+  border-radius:10px;
+  font-weight:800;
 }
 
-.page.active{
-  display:block;
+.btn.gold{
+  background:var(--gold);
+  border-color:var(--gold2);
+  color:#17120a;
 }
+
+.btn.green{
+  background:#245e3a;
+  border-color:#398455;
+}
+
+.btn.red{
+  background:#602b2d;
+  border-color:#913f43;
+}
+
+/* PANELS */
 
 .panel{
   background:var(--panel);
   border:1px solid var(--line);
-  border-radius:15px;
+  border-radius:16px;
   padding:18px;
   margin-bottom:16px;
 }
 
 .panel h2{
-  margin:0 0 14px;
+  margin:0 0 16px;
+  font-size:24px;
 }
 
 .panel h3{
-  margin:0 0 12px;
+  margin:0 0 14px;
 }
 
-.hero{
-  border:1px solid var(--line);
-  border-radius:14px;
-  overflow:hidden;
-  margin-bottom:16px;
-  background:#050608;
-}
-
-.hero img{
-  display:block;
-  width:100%;
-  max-height:420px;
-  object-fit:cover;
-}
-
-.hero-fallback{
-  padding:55px 20px;
-  text-align:center;
-  font-size:28px;
-  font-weight:850;
-  letter-spacing:3px;
-}
+/* FORMS */
 
 .grid{
   display:grid;
-  gap:12px;
-}
-
-.grid2{
   grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
 }
 
 .grid3{
+  display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
 }
 
 .grid4{
+  display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
 }
 
-.metric{
-  background:var(--panel2);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:15px;
-}
-
-.metric .label{
+label{
+  display:block;
   color:var(--muted);
   font-size:13px;
-  font-weight:750;
-  margin-bottom:7px;
+  font-weight:800;
+  margin-bottom:6px;
 }
 
-.metric .value{
-  font-size:25px;
-  font-weight:850;
+input,select,textarea{
+  width:100%;
+  background:#0d0f14;
+  border:1px solid var(--line);
+  color:var(--text);
+  border-radius:10px;
+  padding:13px;
 }
 
-.metric .sub{
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+input:focus,select:focus,textarea:focus{
+  outline:2px solid #246ca0;
+  border-color:#246ca0;
+}
+
+/* CARDS */
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+
+.card{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+}
+
+.card .label{
   color:var(--muted);
-  font-size:12px;
-  margin-top:5px;
+  font-size:13px;
+  font-weight:800;
 }
 
-.goal-card{
-  border-left:3px solid var(--gold);
+.card .value{
+  font-size:28px;
+  font-weight:900;
+  margin-top:8px;
 }
 
-.goal-card.green{
-  border-left-color:var(--green);
+.card.small .value{
+  font-size:22px;
 }
 
-.goal-card.red{
-  border-left-color:var(--red);
-}
-
-.goal-card.blue{
-  border-left-color:var(--blue);
-}
+/* STATUS */
 
 .bar{
   height:12px;
   background:#292e37;
   border-radius:20px;
   overflow:hidden;
-  margin-top:10px;
 }
 
 .fill{
   height:100%;
-  width:0;
   background:var(--gold);
+  border-radius:20px;
+  width:0%;
   transition:.25s;
 }
 
-.table-wrap{
+.status{
+  margin-top:8px;
+  font-weight:800;
+}
+
+.green{color:var(--green)}
+.redtxt{color:var(--red)}
+.goldtxt{color:var(--gold2)}
+.bluetxt{color:var(--blue)}
+
+/* TABLE */
+
+.tablewrap{
   overflow-x:auto;
 }
 
 table{
   width:100%;
   border-collapse:collapse;
-  min-width:760px;
+  min-width:850px;
 }
 
-th,
-td{
+th,td{
   text-align:left;
-  padding:10px 8px;
+  padding:12px;
   border-bottom:1px solid var(--line);
 }
 
 th{
   color:var(--muted);
-  font-size:12px;
-}
-
-.status{
-  font-weight:800;
-}
-
-.status.ok{
-  color:var(--green);
-}
-
-.status.open{
-  color:var(--red);
-}
-
-.field{
-  margin-bottom:12px;
-}
-
-.field label{
-  display:block;
-  color:var(--muted);
   font-size:13px;
-  font-weight:750;
-  margin-bottom:6px;
 }
 
-.field input,
-.field select,
-.field textarea{
-  width:100%;
-  background:#0d0f14;
-  color:white;
-  border:1px solid var(--line);
-  border-radius:9px;
-  padding:12px;
-  outline:none;
-}
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus{
-  border-color:var(--gold);
-}
-
-.field textarea{
-  min-height:100px;
-  resize:vertical;
-}
-
-.month-picker{
-  display:flex;
-  gap:10px;
-  align-items:end;
-  flex-wrap:wrap;
-}
-
-.month-picker .field{
-  flex:1;
-  min-width:220px;
-}
-
-.month-buttons{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:3px 0 12px;
-}
-
-.month-buttons button{
-  white-space:nowrap;
-  padding:10px 13px;
-}
-
-.month-buttons button.selected{
-  background:var(--gold);
-  color:#111;
-  border-color:var(--gold);
-}
-
-.area-title{
-  display:flex;
-  justify-content:space-between;
-  gap:15px;
-  align-items:center;
-  flex-wrap:wrap;
-}
-
-.badge{
-  display:inline-block;
-  border:1px solid var(--gold);
-  color:var(--gold2);
-  border-radius:20px;
-  padding:5px 10px;
-  font-size:12px;
-  font-weight:800;
-}
-
-.chart{
-  display:flex;
-  align-items:flex-end;
-  gap:20px;
-  height:250px;
-  padding:20px 10px 5px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  background:var(--panel2);
-}
-
-.chart-col{
-  flex:1;
-  height:100%;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  gap:10px;
-}
-
-.chart-bar{
-  width:28px;
-  border-radius:7px 7px 0 0;
-  min-height:2px;
-}
-
-.chart-bar.goal{
-  background:#4b515c;
-}
-
-.chart-bar.actual{
-  background:var(--gold);
-}
-
-.chart-legend{
-  display:flex;
-  gap:20px;
-  color:var(--muted);
-  font-size:12px;
-  margin-top:10px;
-}
-
-.legend-box{
-  width:12px;
-  height:12px;
-  display:inline-block;
-  border-radius:3px;
-  margin-right:5px;
-  vertical-align:-2px;
-}
-
-.kpi-row{
-  display:flex;
-  justify-content:space-between;
-  gap:15px;
-  align-items:center;
-}
+/* NOTICE */
 
 .notice{
-  padding:12px;
-  border-left:3px solid var(--gold);
-  background:#101318;
+  background:#101820;
+  border-left:4px solid var(--gold);
   border-radius:8px;
-  color:var(--muted);
-  margin-top:10px;
+  padding:14px;
+  color:#dfe5eb;
+  margin-top:14px;
 }
 
-.analysis-print{
-  margin-top:16px;
-}
+/* ANALYSE */
 
 .analysis-header{
   display:flex;
   justify-content:space-between;
-  gap:20px;
-  align-items:flex-start;
-  border-bottom:1px solid var(--line);
-  padding-bottom:15px;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
 }
 
-.analysis-header h2{
-  margin:0;
+canvas{
+  width:100%;
+  max-height:360px;
+  background:#0d0f14;
+  border:1px solid var(--line);
+  border-radius:12px;
+}
+
+/* PROGRESS */
+
+.progressRow{
+  margin-bottom:16px;
+}
+
+.progressTop{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:7px;
+  color:var(--muted);
 }
 
 footer{
   text-align:center;
   color:var(--muted);
   padding:30px 10px;
+  font-size:13px;
 }
 
-@media(max-width:900px){
-  .grid4{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
+/* PRINT */
 
-  .grid3{
-    grid-template-columns:1fr;
-  }
-}
-
-@media(max-width:650px){
-  .app{
-    padding:10px;
-  }
-
-  header{
-    flex-direction:column;
-  }
-
-  .brand h1{
-    font-size:25px;
-  }
-
-  .grid2,
-  .grid4{
-    grid-template-columns:1fr;
-  }
-
-  .panel{
-    padding:13px;
-  }
-
-  .chart{
-    gap:8px;
-  }
-
-  .chart-bar{
-    width:18px;
-  }
+.printOnly{
+  display:none;
 }
 
 @media print{
   body{
-    background:white;
-    color:#111;
+    background:#fff!important;
+    color:#111!important;
   }
 
-  body *{
-    visibility:hidden;
+  .top,.nav,.actions,.noPrint,.login,
+  button,input,select,textarea{
+    display:none!important;
   }
 
-  #analysisPage,
-  #analysisPage *{
-    visibility:visible;
+  .page{
+    display:none!important;
   }
 
-  #analysisPage{
-    position:absolute;
-    left:0;
-    top:0;
-    width:100%;
+  .page.printActive{
+    display:block!important;
   }
 
-  #analysisControls{
-    display:none !important;
+  .panel,.card{
+    background:#fff!important;
+    color:#111!important;
+    border:1px solid #aaa!important;
+    box-shadow:none!important;
   }
 
-  .panel{
-    background:white;
-    border:1px solid #aaa;
-    color:#111;
+  .printOnly{
+    display:block!important;
   }
 
-  .metric{
-    background:#fafafa;
-    border:1px solid #aaa;
+  canvas{
+    max-height:260px;
+  }
+}
+
+@media(max-width:850px){
+  .top{
+    flex-direction:column;
   }
 
-  .metric .label,
-  .metric .sub,
-  .notice{
-    color:#444;
+  .grid,.grid3,.grid4{
+    grid-template-columns:1fr;
   }
 
-  .analysis-print{
-    display:block !important;
+  .cards{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  h1{
+    font-size:27px;
+  }
+}
+
+@media(max-width:480px){
+  .cards{
+    grid-template-columns:1fr;
+  }
+
+  .wrap{
+    padding:12px;
   }
 }
 </style>
@@ -551,1484 +429,2693 @@ footer{
 
 <body>
 
-<div class="app">
+<!-- LOGIN -->
 
-<header>
-  <div class="brand">
-    <small>AB HEUTE</small>
+<div id="loginScreen" class="login">
+
+  <div class="loginbox">
+
+    <div class="eyebrow">AB HEUTE</div>
     <h1>REPRÄSENTANZLEITER</h1>
-    <p>Ziel-, Monats- und Führungs-Cockpit</p>
-  </div>
 
-  <div class="header-actions">
-    <button onclick="backupData()">Daten sichern</button>
-    <button class="danger" onclick="resetData()">Daten zurücksetzen</button>
-  </div>
-</header>
+    <p>Persönliches Ziel-, Team-, Karriere- und Vergütungs-Cockpit.</p>
 
-<nav id="mainNav">
-  <button class="active" data-page="dashboardPage">Dashboard</button>
-  <button data-page="ownPage">Eigenvolumen</button>
-  <button data-page="zornPage">Team Zorn</button>
-  <button data-page="biewerPage">Team Biewer</button>
-  <button data-page="deckersPage">Team Deckers</button>
-  <button data-page="analysisPage">Analysen</button>
-  <button data-page="settingsPage">Einstellungen</button>
-  <button data-page="guidePage">Anleitung</button>
-</nav>
+    <div id="loginSetup" class="hidden">
 
-<!-- DASHBOARD -->
-<section id="dashboardPage" class="page active">
+      <h3>Ersteinrichtung</h3>
 
-  <div class="hero">
-    <img src="repraesentanzleiter-titelbild.jpg"
-         alt="Repräsentanzleiter"
-         onerror="this.style.display='none';document.getElementById('heroFallback').style.display='block';">
-    <div id="heroFallback" class="hero-fallback" style="display:none;">
-      REPRÄSENTANZLEITER
+      <label>Benutzername</label>
+      <input id="setupUser" placeholder="Benutzername">
+
+      <label style="margin-top:12px">Passwort</label>
+      <input id="setupPass" type="password" placeholder="Passwort">
+
+      <button class="btn gold" style="width:100%;margin-top:16px" onclick="setupLogin()">
+        Zugang erstellen
+      </button>
+
     </div>
-  </div>
 
-  <div class="panel">
-    <div class="area-title">
-      <div>
-        <h2>Gesamtziel</h2>
-        <span class="badge">6-Monats-Cockpit</span>
-      </div>
-      <div class="metric">
-        <div class="label">Gesamtziel</div>
-        <div class="value" id="dashTotalGoal">3.500.000 €</div>
-      </div>
-    </div>
-  </div>
+    <div id="loginForm" class="hidden">
 
-  <div class="grid grid4" id="dashboardMetrics"></div>
+      <label>Benutzername</label>
+      <input id="loginUser">
 
-  <div class="panel">
-    <h2>Gesamtfortschritt</h2>
-    <div class="metric">
-      <div class="kpi-row">
-        <span>Gesamt IST</span>
-        <strong id="dashTotalActual">0 €</strong>
-      </div>
-      <div class="bar">
-        <div class="fill" id="dashTotalFill"></div>
-      </div>
-      <div class="kpi-row" style="margin-top:8px;">
-        <span id="dashTotalPercent">0 % erreicht</span>
-        <span id="dashTotalMissing">3.500.000 € fehlen</span>
-      </div>
-    </div>
-  </div>
+      <label style="margin-top:12px">Passwort</label>
+      <input id="loginPass" type="password">
 
-  <div class="panel">
-    <h2>Aktueller 6-Monats-Plan</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Bereich</th>
-            <th>Verteilung</th>
-            <th>Jahresziel</th>
-            <th>Monatsziel</th>
-            <th>IST</th>
-            <th>Fehlt</th>
-            <th>Erreicht</th>
-          </tr>
-        </thead>
-        <tbody id="dashboardTable"></tbody>
-      </table>
-    </div>
-  </div>
+      <button class="btn gold" style="width:100%;margin-top:16px" onclick="doLogin()">
+        Anmelden
+      </button>
 
-</section>
-
-<!-- GENERIC AREA PAGES -->
-<section id="ownPage" class="page"></section>
-<section id="zornPage" class="page"></section>
-<section id="biewerPage" class="page"></section>
-<section id="deckersPage" class="page"></section>
-
-<!-- ANALYSIS -->
-<section id="analysisPage" class="page">
-
-  <div id="analysisControls" class="panel">
-    <h2>📊 Analyse erstellen</h2>
-    <p style="color:var(--muted);">
-      Einzelmonat oder 6-Monats-Auswertung aus deinen gespeicherten Cockpit-Daten.
-    </p>
-
-    <div class="grid grid3">
-
-      <div class="field">
-        <label>Analyseart</label>
-        <select id="analysisType" onchange="renderAnalysis()">
-          <option value="month">Einzelner Monat</option>
-          <option value="six">6-Monats-Auswertung</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Monat</label>
-        <input type="month" id="analysisMonth" onchange="renderAnalysis()">
-      </div>
-
-      <div class="field">
-        <label>Bereich</label>
-        <select id="analysisArea" onchange="renderAnalysis()">
-          <option value="own">Eigenvolumen</option>
-          <option value="zorn">Team Zorn</option>
-          <option value="biewer">Team Biewer</option>
-          <option value="deckers">Team Deckers</option>
-          <option value="all">Gesamt</option>
-        </select>
+      <div id="loginError" class="notice hidden">
+        Benutzername oder Passwort ist nicht korrekt.
       </div>
 
     </div>
 
-    <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="primary" onclick="renderAnalysis()">Analyse aktualisieren</button>
-      <button onclick="printAnalysis()">📄 Als PDF speichern</button>
+  </div>
+</div>
+
+<!-- APP -->
+
+<div id="app" class="hidden">
+
+<div class="wrap">
+
+  <div class="top">
+
+    <div>
+      <div class="eyebrow">AB HEUTE</div>
+      <h1>REPRÄSENTANZLEITER</h1>
+      <div class="subtitle">Ziel-, Monats-, Führungs-, Karriere- und Vergütungs-Cockpit</div>
     </div>
+
+    <div class="actions noPrint">
+      <button class="btn" onclick="exportData()">Daten exportieren</button>
+      <button class="btn" onclick="logout()">Abmelden</button>
+    </div>
+
   </div>
 
-  <div id="analysisResult"></div>
+  <!-- NAV -->
 
-</section>
+  <div class="nav noPrint">
 
-<!-- SETTINGS -->
-<section id="settingsPage" class="page">
+    <button onclick="showPage('dashboard')" id="nav-dashboard" class="active">Dashboard</button>
 
-  <div class="panel">
-    <h2>Ziele & Annahmen</h2>
+    <button onclick="showPage('eigen')" id="nav-eigen">Eigenvolumen</button>
 
-    <div class="grid grid2">
+    <button onclick="showPage('zorn')" id="nav-zorn">Team Zorn</button>
 
-      <div class="field">
-        <label>Gesamtziel (€)</label>
-        <input type="number" id="settingTotalGoal">
-      </div>
+    <button onclick="showPage('biewer')" id="nav-biewer">Team Biewer</button>
 
-      <div class="field">
-        <label>Umsatz pro Kunde (€)</label>
-        <input type="number" id="settingRevenueCustomer">
-      </div>
+    <button onclick="showPage('deckers')" id="nav-deckers">Team Deckers</button>
 
-      <div class="field">
-        <label>Eigene Kunden – Ziel</label>
-        <input type="number" id="settingOwnCustomers">
-      </div>
+    <button onclick="showPage('gesamt')" id="nav-gesamt">Gesamtübersicht</button>
 
-      <div class="field">
-        <label>Team-Kunden – Ziel</label>
-        <input type="number" id="settingTeamCustomers">
-      </div>
+    <button onclick="showPage('fehlt')" id="nav-fehlt">Was fehlt?</button>
 
-      <div class="field">
-        <label>Abschlussquote (%)</label>
-        <input type="number" id="settingCloseRate">
-      </div>
+    <button onclick="showPage('verlauf')" id="nav-verlauf">Verlauf</button>
 
-      <div class="field">
-        <label>Ziel-Abschlussquote (%)</label>
-        <input type="number" id="settingTargetCloseRate">
-      </div>
+    <button onclick="showPage('analysen')" id="nav-analysen">Analysen</button>
 
-      <div class="field">
-        <label>Kontakte bis Dezember</label>
-        <input type="number" id="settingContacts">
-      </div>
+    <button onclick="showPage('verguetung')" id="nav-verguetung">💰 Vergütung</button>
 
-      <div class="field">
-        <label>Serientermine pro Woche</label>
-        <input type="number" id="settingSeriesPerWeek">
-      </div>
+    <button onclick="showPage('karriere')" id="nav-karriere">Karriere</button>
 
-      <div class="field">
-        <label>Vertriebspartner pro Serientermin</label>
-        <input type="number" id="settingPartners">
-      </div>
+    <button onclick="showPage('einstellungen')" id="nav-einstellungen">Einstellungen</button>
 
-      <div class="field">
-        <label>Startmonat 6-Monats-Betrachtung</label>
-        <input type="month" id="settingStartMonth">
-      </div>
+    <button onclick="showPage('anleitung')" id="nav-anleitung">Anleitung</button>
 
-    </div>
-
-    <h3 style="margin-top:20px;">Umsatzverteilung</h3>
-
-    <div class="grid grid4">
-
-      <div class="metric">
-        <div class="label">Team Zorn</div>
-        <div class="value">40 %</div>
-        <div class="sub">Stärkster Teambereich</div>
-      </div>
-
-      <div class="metric">
-        <div class="label">Eigenvolumen</div>
-        <div class="value">30 %</div>
-        <div class="sub">Matthias</div>
-      </div>
-
-      <div class="metric">
-        <div class="label">Team Biewer</div>
-        <div class="value">15 %</div>
-        <div class="sub">Teambereich</div>
-      </div>
-
-      <div class="metric">
-        <div class="label">Team Deckers</div>
-        <div class="value">15 %</div>
-        <div class="sub">Teambereich</div>
-      </div>
-
-    </div>
-
-    <button class="primary" style="margin-top:15px;" onclick="saveSettings()">
-      Einstellungen speichern
-    </button>
-
-    <div class="notice">
-      Die Zielverteilung 40 % / 30 % / 15 % / 15 % bleibt fest hinterlegt.
-      Die einzelnen Monatsziele werden automatisch aus dem Gesamtziel und der
-      jeweiligen Verteilung berechnet.
-    </div>
   </div>
 
-</section>
+  <!-- DASHBOARD -->
 
-<!-- GUIDE -->
-<section id="guidePage" class="page">
+  <section id="page-dashboard" class="page">
 
-  <div class="panel">
-    <h2>Anleitung</h2>
+    <div class="panel">
 
-    <h3>1. Eigenvolumen</h3>
-    <p>
-      Im Bereich Eigenvolumen trägst du ausschließlich deine eigenen Werte ein.
-      Jeder Monat wird separat gespeichert.
-    </p>
+      <h2>Dashboard</h2>
 
-    <h3>2. Team Zorn</h3>
-    <p>
-      Team Zorn trägt 40 % zum Gesamtziel bei.
-      Bei 3.500.000 € entspricht das 1.400.000 €.
-    </p>
+      <div class="grid3">
 
-    <h3>3. Team Biewer</h3>
-    <p>
-      Team Biewer trägt 15 % bei.
-      Das entspricht 525.000 €.
-    </p>
+        <div>
+          <label>Monat auswählen</label>
+          <input type="month" id="dashMonth" onchange="setGlobalMonth(this.value)">
+        </div>
 
-    <h3>4. Team Deckers</h3>
-    <p>
-      Team Deckers trägt ebenfalls 15 % bei.
-      Das entspricht 525.000 €.
-    </p>
+        <div>
+          <label>Meine Position</label>
+          <select id="dashboardPosition" onchange="changeMyPosition(this.value)"></select>
+        </div>
 
-    <h3>5. Monate</h3>
-    <p>
-      Du kannst über das Monatsfeld jeden Monat auswählen.
-      Es gibt keine feste Liste, die nach Januar 2027 endet.
-      Dadurch kannst du das Cockpit dauerhaft weiterführen.
-    </p>
+        <div>
+          <label>Aktueller Promillesatz</label>
+          <input id="dashboardRate" disabled>
+        </div>
 
-    <h3>6. Analysen</h3>
-    <p>
-      Wähle einen Bereich und einen Monat aus.
-      Anschließend kannst du eine grafische Analyse erzeugen und über
-      „Als PDF speichern“ als PDF ausgeben.
-    </p>
+      </div>
 
-    <h3>7. Daten sichern</h3>
-    <p>
-      Mit „Daten sichern“ kannst du deine gespeicherten Daten als JSON-Datei
-      exportieren und später wieder laden.
-    </p>
-  </div>
+    </div>
 
-</section>
+    <div class="cards">
 
-<footer>
-  REPRÄSENTANZLEITER · FÜHREN. ENTSCHEIDEN. VERANTWORTEN. WACHSEN.
-</footer>
+      <div class="card">
+        <div class="label">Eigenumsatz</div>
+        <div class="value" id="dashEigenUmsatz">0 €</div>
+      </div>
 
+      <div class="card">
+        <div class="label">Teamumsatz</div>
+        <div class="value" id="dashTeamUmsatz">0 €</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Gesamtumsatz</div>
+        <div class="value" id="dashGesamtUmsatz">0 €</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Zielerreichung</div>
+        <div class="value goldtxt" id="dashZiel">0 %</div>
+      </div>
+
+    </div>
+
+    <div class="cards" style="margin-top:12px">
+
+      <div class="card">
+        <div class="label">Mein Verdienst</div>
+        <div class="value green" id="dashMeinVerdienst">0 €</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Verdienst aus Team</div>
+        <div class="value green" id="dashTeamVerdienst">0 €</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Gesamtverdienst</div>
+        <div class="value goldtxt" id="dashGesamtVerdienst">0 €</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Provisionseinbehalt</div>
+        <div class="value" id="dashEinbehalt">0 €</div>
+      </div>
+
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+
+      <h3>Gesamtziel</h3>
+
+      <div class="progressRow">
+        <div class="progressTop">
+          <span id="dashGoalText">0 € von 3.500.000 €</span>
+          <strong id="dashGoalPercent">0 %</strong>
+        </div>
+        <div class="bar"><div id="dashGoalBar" class="fill"></div></div>
+      </div>
+
+      <div id="dashNotice" class="notice"></div>
+
+    </div>
+
+  </section>
+
+  <!-- EIGENVOLUMEN -->
+
+  <section id="page-eigen" class="page hidden">
+
+    <div class="panel">
+
+      <h2>Eigenvolumen – Matthias</h2>
+
+      <div class="grid">
+
+        <div>
+          <label>Monat auswählen</label>
+          <input type="month" id="eigenMonth" onchange="loadSectionMonth('eigen',this.value)">
+        </div>
+
+        <div style="display:flex;align-items:end">
+          <button class="btn gold" style="width:100%" onclick="loadSelectedMonth('eigen')">
+            Monat laden
+          </button>
+        </div>
+
+      </div>
+
+      <div class="grid" style="margin-top:14px">
+
+        <div>
+          <label>Umsatz (€)</label>
+          <input type="number" id="eigenUmsatz" oninput="liveSectionUpdate('eigen')">
+        </div>
+
+        <div>
+          <label>Kunden gewonnen</label>
+          <input type="number" id="eigenKunden" oninput="liveSectionUpdate('eigen')">
+        </div>
+
+        <div>
+          <label>Kontakte / Gespräche</label>
+          <input type="number" id="eigenKontakte" oninput="liveSectionUpdate('eigen')">
+        </div>
+
+        <div>
+          <label>Serientermine</label>
+          <input type="number" id="eigenTermine" oninput="liveSectionUpdate('eigen')">
+        </div>
+
+      </div>
+
+      <div style="margin-top:14px">
+
+        <label>Notizen</label>
+        <textarea id="eigenNotizen" oninput="liveSectionUpdate('eigen')"></textarea>
+
+      </div>
+
+      <div class="cards" style="margin-top:16px">
+
+        <div class="card small">
+          <div class="label">Monatsziel</div>
+          <div class="value" id="eigenGoal">0 €</div>
+        </div>
+
+        <div class="card small">
+          <div class="label">IST</div>
+          <div class="value" id="eigenIst">0 €</div>
+        </div>
+
+        <div class="card small">
+          <div class="label">Fehlt</div>
+          <div class="value redtxt" id="eigenFehlt">0 €</div>
+        </div>
+
+        <div class="card small">
+          <div class="label">Erreicht</div>
+          <div class="value green" id="eigenErreicht">0 %</div>
+        </div>
+
+      </div>
+
+      <button class="btn gold" style="margin-top:16px" onclick="saveSection('eigen')">
+        Monat speichern
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- TEAM ZORN -->
+
+  <section id="page-zorn" class="page hidden">
+
+    <div class="panel">
+
+      <h2>Team Zorn</h2>
+
+      <div class="grid">
+
+        <div>
+          <label>Monat auswählen</label>
+          <input type="month" id="zornMonth" onchange="loadSectionMonth('zorn',this.value)">
+        </div>
+
+        <div style="display:flex;align-items:end">
+          <button class="btn gold" style="width:100%" onclick="loadSelectedMonth('zorn')">
+            Monat laden
+          </button>
+        </div>
+
+      </div>
+
+      <div class="grid" style="margin-top:14px">
+
+        <div>
+          <label>Umsatz (€)</label>
+          <input type="number" id="zornUmsatz" oninput="liveSectionUpdate('zorn')">
+        </div>
+
+        <div>
+          <label>Kunden gewonnen</label>
+          <input type="number" id="zornKunden" oninput="liveSectionUpdate('zorn')">
+        </div>
+
+        <div>
+          <label>Kontakte / Gespräche</label>
+          <input type="number" id="zornKontakte" oninput="liveSectionUpdate('zorn')">
+        </div>
+
+        <div>
+          <label>Serientermine</label>
+          <input type="number" id="zornTermine" oninput="liveSectionUpdate('zorn')">
+        </div>
+
+      </div>
+
+      <div style="margin-top:14px">
+
+        <label>Notizen</label>
+        <textarea id="zornNotizen" oninput="liveSectionUpdate('zorn')"></textarea>
+
+      </div>
+
+      <div class="cards" style="margin-top:16px">
+
+        <div class="card small">
+          <div class="label">Monatsziel</div>
+          <div class="value" id="zornGoal">0 €</div>
+        </div>
+
+        <div class="card small">
+          <div class="label">IST</div>
+          <div class="value" id="zornIst">0 €</div>
+        </div>
+
+        <div class="card small">
+          <div class="label">Fehlt</div>
+          <div class="value redtxt" id="zornFehlt">0 €</div>
+        </div>
+
+        <div class="card small">
+          <div class="label">Erreicht</div>
+          <div class="value green" id="zornErreicht">0 %</div>
+        </div>
+
+      </div>
+
+      <button class="btn gold" style="margin-top:16px" onclick="saveSection('zorn')">
+        Monat speichern
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- TEAM BIEWER -->
+
+  <section id="page-biewer" class="page hidden">
+
+    <div class="panel">
+
+      <h2>Team Biewer</h2>
+
+      <div class="grid">
+
+        <div>
+          <label>Monat auswählen</label>
+          <input type="month" id="biewerMonth" onchange="loadSectionMonth('biewer',this.value)">
+        </div>
+
+        <div style="display:flex;align-items:end">
+          <button class="btn gold" style="width:100%" onclick="loadSelectedMonth('biewer')">
+            Monat laden
+          </button>
+        </div>
+
+      </div>
+
+      <div class="grid" style="margin-top:14px">
+
+        <div>
+          <label>Umsatz (€)</label>
+          <input type="number" id="biewerUmsatz" oninput="liveSectionUpdate('biewer')">
+        </div>
+
+        <div>
+          <label>Kunden gewonnen</label>
+          <input type="number" id="biewerKunden" oninput="liveSectionUpdate('biewer')">
+        </div>
+
+        <div>
+          <label>Kontakte / Gespräche</label>
+          <input type="number" id="biewerKontakte" oninput="liveSectionUpdate('biewer')">
+        </div>
+
+        <div>
+          <label>Serientermine</label>
+          <input type="number" id="biewerTermine" oninput="liveSectionUpdate('biewer')">
+        </div>
+
+      </div>
+
+      <div style="margin-top:14px">
+
+        <label>Notizen</label>
+        <textarea id="biewerNotizen" oninput="liveSectionUpdate('biewer')"></textarea>
+
+      </div>
+
+      <div class="cards" style="margin-top:16px">
+
+        <div class="card small">
+          <div class="label">Monatsziel</div>
+          <div class="value" id="biewerGoal">0 €</div>
+        </div>
+
+        <div class="card small">
+          <div class="label">IST</div>
+          <div class="value" id="biewerIst">0 €</div>
+        </div>
+
+        <div class="card small">
+          <div class="label">Fehlt</div>
+          <div class="value redtxt" id="biewerFehlt">0 €</div>
+        </div>
+
+        <div class="card small">
+          <div class="label">Erreicht</div>
+          <div class="value green" id="biewerErreicht">0 %</div>
+        </div>
+
+      </div>
+
+      <button class="btn gold" style="margin-top:16px" onclick="saveSection('biewer')">
+        Monat speichern
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- TEAM DECKERS -->
+
+  <section id="page-deckers" class="page hidden">
+
+    <div class="panel">
+
+      <h2>Team Deckers</h2>
+
+      <div class="grid">
+
+        <div>
+          <label>Monat auswählen</label>
+          <input type="month" id="deckersMonth" onchange="loadSectionMonth('deckers',this.value)">
+        </div>
+
+        <div style="display:flex;align-items:end">
+          <button class="btn gold" style="width:100%" onclick="loadSelectedMonth('deckers')">
+            Monat laden
+          </button>
+        </div>
+
+      </div>
+
+      <div class="grid" style="margin-top:14px">
+
+        <div>
+          <label>Umsatz (€)</label>
+          <input type="number" id="deckersUmsatz" oninput="liveSectionUpdate('deckers')">
+        </div>
+
+        <div>
+          <label>Kunden gewonnen</label>
+          <input type="number" id="deckersKunden" oninput="liveSectionUpdate('deckers')">
+        </div>
+
+        <div>
+          <label>Kontakte / Gespräche</label>
+          <input type="number" id="deckersKontakte" oninput="liveSectionUpdate('deckers')">
+        </div>
+
+        <div>
+          <label>Serientermine</label>
+          <input type="number" id="deckersTermine" oninput="liveSectionUpdate('deckers')">
+        </div>
+
+      </div>
+
+      <div style="margin-top:14px">
+
+        <label>Notizen</label>
+        <textarea id="deckersNotizen" oninput="liveSectionUpdate('deckers')"></textarea>
+
+      </div>
+
+      <div class="cards" style="margin-top:16px">
+
+        <div class="card small">
+          <div class="label">Monatsziel</div>
+          <div class="value" id="deckersGoal">0 €</div>
+        </div>
+
+        <div class="card small">
+          <div class="label">IST</div>
+          <div class="value" id="deckersIst">0 €</div>
+        </div>
+
+        <div class="card small">
+          <div class="label">Fehlt</div>
+          <div class="value redtxt" id="deckersFehlt">0 €</div>
+        </div>
+
+        <div class="card small">
+          <div class="label">Erreicht</div>
+          <div class="value green" id="deckersErreicht">0 %</div>
+        </div>
+
+      </div>
+
+      <button class="btn gold" style="margin-top:16px" onclick="saveSection('deckers')">
+        Monat speichern
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- GESAMT -->
+
+  <section id="page-gesamt" class="page hidden">
+
+    <div class="panel">
+
+      <h2>Gesamtübersicht</h2>
+
+      <div class="grid">
+
+        <div>
+          <label>Monat auswählen</label>
+          <input type="month" id="gesamtMonth" onchange="setGlobalMonth(this.value)">
+        </div>
+
+      </div>
+
+      <div class="cards" style="margin-top:16px">
+
+        <div class="card">
+          <div class="label">Eigenvolumen</div>
+          <div class="value" id="gesamtEigen">0 €</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Team Zorn</div>
+          <div class="value" id="gesamtZorn">0 €</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Team Biewer</div>
+          <div class="value" id="gesamtBiewer">0 €</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Team Deckers</div>
+          <div class="value" id="gesamtDeckers">0 €</div>
+        </div>
+
+      </div>
+
+      <div class="cards" style="margin-top:12px">
+
+        <div class="card">
+          <div class="label">Gesamtumsatz</div>
+          <div class="value goldtxt" id="gesamtTotal">0 €</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Kunden gesamt</div>
+          <div class="value" id="gesamtKunden">0</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Kontakte gesamt</div>
+          <div class="value" id="gesamtKontakte">0</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Serientermine</div>
+          <div class="value" id="gesamtTermine">0</div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- WAS FEHLT -->
+
+  <section id="page-fehlt" class="page hidden">
+
+    <div class="panel">
+
+      <h2>Was fehlt noch?</h2>
+
+      <div id="fehltContent"></div>
+
+    </div>
+
+  </section>
+
+  <!-- VERLAUF -->
+
+  <section id="page-verlauf" class="page hidden">
+
+    <div class="panel">
+
+      <h2>Monatsverlauf</h2>
+
+      <div class="grid">
+
+        <div>
+          <label>Bereich</label>
+          <select id="verlaufBereich" onchange="renderVerlauf()">
+            <option value="gesamt">Gesamt</option>
+            <option value="eigen">Eigenvolumen</option>
+            <option value="zorn">Team Zorn</option>
+            <option value="biewer">Team Biewer</option>
+            <option value="deckers">Team Deckers</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div style="margin-top:16px">
+        <canvas id="verlaufChart" width="1000" height="360"></canvas>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ANALYSEN -->
+
+  <section id="page-analysen" class="page hidden">
+
+    <div class="panel">
+
+      <div class="analysis-header">
+        <div>
+          <h2>📊 Analyse erstellen</h2>
+          <div class="subtitle">
+            Einzelmonat oder 6-Monats-Auswertung aus deinen gespeicherten Cockpit-Daten.
+          </div>
+        </div>
+
+        <button class="btn gold noPrint" onclick="printAnalysis()">📄 Als PDF speichern</button>
+      </div>
+
+      <div class="grid3" style="margin-top:16px">
+
+        <div>
+          <label>Analyseart</label>
+          <select id="analyseArt" onchange="renderAnalysis()">
+            <option value="month">Einzelner Monat</option>
+            <option value="six">6-Monats-Analyse</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Monat</label>
+          <input type="month" id="analyseMonth" onchange="renderAnalysis()">
+        </div>
+
+        <div>
+          <label>Bereich</label>
+          <select id="analyseBereich" onchange="renderAnalysis()">
+            <option value="eigen">Eigenvolumen</option>
+            <option value="zorn">Team Zorn</option>
+            <option value="biewer">Team Biewer</option>
+            <option value="deckers">Team Deckers</option>
+            <option value="gesamt">Gesamt</option>
+          </select>
+        </div>
+
+      </div>
+
+      <button class="btn gold noPrint" style="margin-top:16px" onclick="renderAnalysis()">
+        Analyse aktualisieren
+      </button>
+
+    </div>
+
+    <div id="analysisPrintArea" class="page printActive">
+
+      <div class="panel">
+
+        <div class="printOnly">
+          <h1>Repräsentanzleiter Cockpit – Analyse</h1>
+        </div>
+
+        <h2 id="analysisTitle">Analyse</h2>
+
+        <div class="cards">
+
+          <div class="card small">
+            <div class="label">Umsatz</div>
+            <div class="value" id="analyseUmsatz">0 €</div>
+          </div>
+
+          <div class="card small">
+            <div class="label">Kunden</div>
+            <div class="value" id="analyseKunden">0</div>
+          </div>
+
+          <div class="card small">
+            <div class="label">Kontakte</div>
+            <div class="value" id="analyseKontakte">0</div>
+          </div>
+
+          <div class="card small">
+            <div class="label">Serientermine</div>
+            <div class="value" id="analyseTermine">0</div>
+          </div>
+
+        </div>
+
+        <div class="cards" style="margin-top:12px">
+
+          <div class="card small">
+            <div class="label">Abschlussquote</div>
+            <div class="value" id="analyseQuote">0 %</div>
+          </div>
+
+          <div class="card small">
+            <div class="label">Zielerreichung</div>
+            <div class="value goldtxt" id="analyseZiel">0 %</div>
+          </div>
+
+          <div class="card small">
+            <div class="label">Fehlvolumen</div>
+            <div class="value redtxt" id="analyseFehlt">0 €</div>
+          </div>
+
+          <div class="card small">
+            <div class="label">Vormonat</div>
+            <div class="value" id="analyseVormonat">–</div>
+          </div>
+
+        </div>
+
+        <div style="margin-top:16px">
+          <canvas id="analyseChart" width="1000" height="360"></canvas>
+        </div>
+
+        <div class="notice" id="analyseText"></div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- VERGÜTUNG -->
+
+  <section id="page-verguetung" class="page hidden">
+
+    <div class="panel">
+
+      <h2>💰 Automatische Vergütung</h2>
+
+      <div class="grid3">
+
+        <div>
+          <label>Monat auswählen</label>
+          <input type="month" id="vergMonth" onchange="setGlobalMonth(this.value)">
+        </div>
+
+        <div>
+          <label>Meine Position</label>
+          <select id="vergMyPosition" onchange="changeMyPosition(this.value)"></select>
+        </div>
+
+        <div>
+          <label>Mein Promillesatz</label>
+          <input id="vergMyRate" disabled>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel">
+
+      <h3>Meine Vergütung</h3>
+
+      <div class="cards">
+
+        <div class="card">
+          <div class="label">Eigenumsatz</div>
+          <div class="value" id="vergEigenUmsatz">0 €</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Brutto-Provision</div>
+          <div class="value green" id="vergEigenBrutto">0 €</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Provisionseinbehalt</div>
+          <div class="value" id="vergEigenEinbehalt">0 €</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Netto-Provision</div>
+          <div class="value goldtxt" id="vergEigenNetto">0 €</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel">
+
+      <h3>Teamvergütung und Differenzprovision</h3>
+
+      <div class="tablewrap">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Person</th>
+              <th>Position</th>
+              <th>Umsatz</th>
+              <th>Promille</th>
+              <th>Eigener Verdienst</th>
+              <th>Deine Differenz</th>
+              <th>Dein Verdienst daraus</th>
+            </tr>
+          </thead>
+
+          <tbody id="vergTeamTable"></tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+    <div class="panel">
+
+      <h3>Dein Gesamtverdienst im ausgewählten Monat</h3>
+
+      <div class="cards">
+
+        <div class="card">
+          <div class="label">Eigenverdienst</div>
+          <div class="value" id="vergTotalEigen">0 €</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Team-Differenzverdienst</div>
+          <div class="value" id="vergTotalTeam">0 €</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Gesamt Brutto</div>
+          <div class="value" id="vergTotalBrutto">0 €</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Gesamt nach Einbehalt</div>
+          <div class="value goldtxt" id="vergTotalNetto">0 €</div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- KARRIERE -->
+
+  <section id="page-karriere" class="page hidden">
+
+    <div class="panel">
+
+      <h2>🚀 Karrierefortschritt</h2>
+
+      <div class="grid">
+
+        <div>
+          <label>Meine aktuelle Position</label>
+          <select id="karrierePosition" onchange="changeMyPosition(this.value)"></select>
+        </div>
+
+        <div>
+          <label>Bewertungszeitraum</label>
+          <select id="karriereMonths" onchange="renderCareer()">
+            <option value="6">Letzte 6 Monate</option>
+            <option value="12">Letzte 12 Monate</option>
+          </select>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel">
+
+      <div id="careerContent"></div>
+
+    </div>
+
+  </section>
+
+  <!-- EINSTELLUNGEN -->
+
+  <section id="page-einstellungen" class="page hidden">
+
+    <div class="panel">
+
+      <h2>Einstellungen</h2>
+
+      <h3>Grundziele</h3>
+
+      <div class="grid">
+
+        <div>
+          <label>Gesamtziel (€)</label>
+          <input type="number" id="setGesamtziel">
+        </div>
+
+        <div>
+          <label>Persönliches Ziel (€)</label>
+          <input type="number" id="setEigenziel">
+        </div>
+
+        <div>
+          <label>Teamziel (€)</label>
+          <input type="number" id="setTeamziel">
+        </div>
+
+        <div>
+          <label>Ø Umsatz pro Kunde (€)</label>
+          <input type="number" id="setProKunde">
+        </div>
+
+        <div>
+          <label>Ziel-Abschlussquote (%)</label>
+          <input type="number" id="setAbschlussquote">
+        </div>
+
+        <div>
+          <label>Kontaktziel pro Monat</label>
+          <input type="number" id="setKontaktziel">
+        </div>
+
+        <div>
+          <label>Neue Vertriebspartner</label>
+          <input type="number" id="setPartnerziel">
+        </div>
+
+        <div>
+          <label>Serientermine pro Woche</label>
+          <input type="number" id="setSerienterminZiel">
+        </div>
+
+      </div>
+
+      <button class="btn gold" style="margin-top:16px" onclick="saveSettings()">
+        Einstellungen speichern
+      </button>
+
+    </div>
+
+    <div class="panel">
+
+      <h3>👥 Teampositionen</h3>
+
+      <div class="grid4">
+
+        <div>
+          <label>Matthias</label>
+          <select id="posEigen" onchange="saveTeamPositions()"></select>
+        </div>
+
+        <div>
+          <label>Zorn</label>
+          <select id="posZorn" onchange="saveTeamPositions()"></select>
+        </div>
+
+        <div>
+          <label>Biewer</label>
+          <select id="posBiewer" onchange="saveTeamPositions()"></select>
+        </div>
+
+        <div>
+          <label>Deckers</label>
+          <select id="posDeckers" onchange="saveTeamPositions()"></select>
+        </div>
+
+      </div>
+
+      <div class="notice">
+        Änderst du hier eine Position, wird der dazugehörige Promillesatz automatisch übernommen.
+        Dadurch ändern sich sämtliche Verdienst- und Differenzberechnungen automatisch.
+      </div>
+
+    </div>
+
+    <div class="panel">
+
+      <h3>Positionen & Vergütung</h3>
+
+      <div class="tablewrap">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Position</th>
+              <th>Promille</th>
+              <th>Mindest Eigenvolumen</th>
+              <th>Mindest Teamvolumen</th>
+              <th>Qualitätsquote max.</th>
+              <th>Provisionseinbehalt</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody id="positionTable"></tbody>
+
+        </table>
+
+      </div>
+
+      <button class="btn" style="margin-top:16px" onclick="addPosition()">
+        + Neue Position hinzufügen
+      </button>
+
+      <button class="btn gold" style="margin-top:16px" onclick="savePositions()">
+        Positionen speichern
+      </button>
+
+    </div>
+
+    <div class="panel">
+
+      <h3>Zugang ändern</h3>
+
+      <div class="grid">
+
+        <div>
+          <label>Neuer Benutzername</label>
+          <input id="newUser">
+        </div>
+
+        <div>
+          <label>Neues Passwort</label>
+          <input type="password" id="newPass">
+        </div>
+
+      </div>
+
+      <button class="btn" style="margin-top:16px" onclick="changeLogin()">
+        Zugang ändern
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- ANLEITUNG -->
+
+  <section id="page-anleitung" class="page hidden">
+
+    <div class="panel">
+
+      <h2>Anleitung</h2>
+
+      <p><strong>1. Monat auswählen:</strong> Du kannst jeden beliebigen vergangenen oder zukünftigen Monat auswählen.</p>
+
+      <p><strong>2. Werte eintragen:</strong> Eigenvolumen und jedes Team werden getrennt gespeichert.</p>
+
+      <p><strong>3. Monat speichern:</strong> Die Daten werden direkt auf diesem Gerät im Browser gespeichert.</p>
+
+      <p><strong>4. Position auswählen:</strong> Die Position bestimmt automatisch den Promillesatz und den Provisionseinbehalt.</p>
+
+      <p><strong>5. Vergütung:</strong> Eigenverdienst und Differenzverdienste aus dem Team werden automatisch berechnet.</p>
+
+      <p><strong>6. Analyse:</strong> Du kannst einzelne Monate oder 6-Monats-Zeiträume auswerten und als PDF speichern.</p>
+
+    </div>
+
+  </section>
+
+  <footer>
+    REPRÄSENTANZLEITER · FÜHREN · ENTSCHEIDEN · VERANTWORTEN · WACHSEN
+  </footer>
+
+</div>
 </div>
 
 <script>
 
 /* =========================================================
-   GRUNDDATEN
+   DATENBANK
 ========================================================= */
 
-const AREAS = {
-  own:{
-    name:"Eigenvolumen",
-    short:"Eigen",
-    share:.30,
-    colorClass:"blue"
+const DBKEY = "repraesentanzleiterCockpitV3";
+
+let db = {
+  settings:{
+    gesamtziel:3500000,
+    eigenziel:1050000,
+    teamziel:2450000,
+    proKunde:50000,
+    abschlussquote:50,
+    kontaktziel:32,
+    partnerziel:2,
+    serienterminZiel:1
   },
-  zorn:{
-    name:"Team Zorn",
-    short:"Zorn",
-    share:.40,
-    colorClass:"gold"
+
+  login:null,
+
+  myPosition:"Seniorberater",
+
+  teamPositions:{
+    eigen:"Seniorberater",
+    zorn:"Juniorberater",
+    biewer:"Beraterassistent",
+    deckers:"Trainee"
   },
-  biewer:{
-    name:"Team Biewer",
-    short:"Biewer",
-    share:.15,
-    colorClass:"green"
-  },
-  deckers:{
-    name:"Team Deckers",
-    short:"Deckers",
-    share:.15,
-    colorClass:"red"
+
+  positions:[
+    {
+      name:"Seniorberater",
+      rate:17,
+      eigen:225000,
+      team:750000,
+      quality:"",
+      hold:10
+    },
+    {
+      name:"Juniorberater",
+      rate:14,
+      eigen:105000,
+      team:350000,
+      quality:"",
+      hold:10
+    },
+    {
+      name:"Beraterassistent",
+      rate:10,
+      eigen:105000,
+      team:350000,
+      quality:"",
+      hold:20
+    },
+    {
+      name:"Trainee",
+      rate:7,
+      eigen:0,
+      team:0,
+      quality:"",
+      hold:20
+    },
+    {
+      name:"Teamleiter",
+      rate:20,
+      eigen:0,
+      team:1750000,
+      quality:13,
+      hold:10
+    },
+    {
+      name:"Repräsentanzleiter",
+      rate:22.5,
+      eigen:0,
+      team:3500000,
+      quality:13,
+      hold:10
+    },
+    {
+      name:"Branch Manager",
+      rate:25.5,
+      eigen:0,
+      team:7500000,
+      quality:13,
+      hold:10
+    },
+    {
+      name:"Regional Manager",
+      rate:28,
+      eigen:0,
+      team:15000000,
+      quality:13,
+      hold:10
+    },
+    {
+      name:"Divisional Manager",
+      rate:30.5,
+      eigen:0,
+      team:30000000,
+      quality:13,
+      hold:10
+    },
+    {
+      name:"General Manager",
+      rate:30.5,
+      eigen:0,
+      team:60000000,
+      quality:13,
+      hold:10
+    }
+  ],
+
+  months:{}
+};
+
+function loadDB(){
+
+  const saved = localStorage.getItem(DBKEY);
+
+  if(saved){
+
+    try{
+      const parsed = JSON.parse(saved);
+
+      db = {
+        ...db,
+        ...parsed,
+        settings:{...db.settings,...parsed.settings},
+        teamPositions:{...db.teamPositions,...parsed.teamPositions}
+      };
+
+    }catch(e){
+      console.log("Daten konnten nicht geladen werden");
+    }
+
   }
-};
 
-const DEFAULT_SETTINGS = {
-  totalGoal:3500000,
-  revenuePerCustomer:50000,
-  ownCustomers:21,
-  teamCustomers:49,
-  closeRate:50,
-  targetCloseRate:66,
-  contactsUntilDecember:32,
-  seriesPerWeek:1,
-  partnersPerSeries:2,
-  startMonth:"2026-08"
-};
+}
 
-let settings = loadSettings();
+function saveDB(){
 
-let data = loadData();
+  localStorage.setItem(DBKEY,JSON.stringify(db));
+
+}
 
 /* =========================================================
    HILFSFUNKTIONEN
 ========================================================= */
 
-function euro(value){
-  return new Intl.NumberFormat("de-DE",{
+function euro(v){
+
+  return Number(v || 0).toLocaleString("de-DE",{
     style:"currency",
     currency:"EUR",
-    maximumFractionDigits:0
-  }).format(Number(value)||0);
+    maximumFractionDigits:2
+  });
+
 }
 
-function number(value){
-  return new Intl.NumberFormat("de-DE").format(Number(value)||0);
+function number(v){
+
+  return Number(v || 0).toLocaleString("de-DE");
+
 }
 
-function percent(value){
-  return (Number(value)||0).toFixed(1).replace(".",",")+" %";
+function getCurrentMonth(){
+
+  const d = new Date();
+
+  return d.getFullYear() + "-" +
+    String(d.getMonth()+1).padStart(2,"0");
+
 }
 
-function clamp(value,min,max){
-  return Math.max(min,Math.min(max,value));
-}
+function getMonthName(value){
 
-function monthLabel(month){
-  if(!month) return "";
-  const [year,m]=month.split("-");
-  const date=new Date(Number(year),Number(m)-1,1);
+  if(!value) return "";
 
-  return date.toLocaleDateString("de-DE",{
+  const [year,month] = value.split("-");
+
+  return new Intl.DateTimeFormat("de-DE",{
     month:"long",
     year:"numeric"
-  });
+  }).format(new Date(year,Number(month)-1,1));
+
 }
 
-function addMonths(month,count){
-  const [year,m]=month.split("-").map(Number);
-  const date=new Date(year,m-1+count,1);
+function getMonthData(month){
 
-  return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0");
-}
+  if(!db.months[month]){
 
-function sixMonths(start){
-  return Array.from({length:6},(_,i)=>addMonths(start,i));
-}
-
-/* =========================================================
-   SPEICHERUNG
-========================================================= */
-
-function loadSettings(){
-  try{
-    const saved=localStorage.getItem("repraesentanzleiter_settings");
-    return saved
-      ? {...DEFAULT_SETTINGS,...JSON.parse(saved)}
-      : {...DEFAULT_SETTINGS};
-  }catch(e){
-    return {...DEFAULT_SETTINGS};
-  }
-}
-
-function loadData(){
-  try{
-    return JSON.parse(
-      localStorage.getItem("repraesentanzleiter_data") || "{}"
-    );
-  }catch(e){
-    return {};
-  }
-}
-
-function saveAll(){
-  localStorage.setItem(
-    "repraesentanzleiter_settings",
-    JSON.stringify(settings)
-  );
-
-  localStorage.setItem(
-    "repraesentanzleiter_data",
-    JSON.stringify(data)
-  );
-}
-
-function ensureMonthArea(month,area){
-  if(!data[month]){
-    data[month]={};
-  }
-
-  if(!data[month][area]){
-    data[month][area]={
-      revenue:0,
-      customers:0,
-      contacts:0,
-      series:0,
-      notes:""
+    db.months[month] = {
+      eigen:{umsatz:0,kunden:0,kontakte:0,termine:0,notizen:""},
+      zorn:{umsatz:0,kunden:0,kontakte:0,termine:0,notizen:""},
+      biewer:{umsatz:0,kunden:0,kontakte:0,termine:0,notizen:""},
+      deckers:{umsatz:0,kunden:0,kontakte:0,termine:0,notizen:""}
     };
+
   }
 
-  return data[month][area];
+  return db.months[month];
+
+}
+
+function getPosition(name){
+
+  return db.positions.find(p=>p.name===name) ||
+    db.positions[0];
+
+}
+
+function getSectionName(section){
+
+  const names={
+    eigen:"Eigenvolumen",
+    zorn:"Team Zorn",
+    biewer:"Team Biewer",
+    deckers:"Team Deckers"
+  };
+
+  return names[section] || section;
+
 }
 
 /* =========================================================
-   ZIELE
+   LOGIN
 ========================================================= */
 
-function annualGoal(area){
-  return settings.totalGoal * AREAS[area].share;
+function initLogin(){
+
+  if(!db.login){
+
+    document.getElementById("loginSetup").classList.remove("hidden");
+
+  }else{
+
+    document.getElementById("loginForm").classList.remove("hidden");
+
+  }
+
 }
 
-function monthlyGoal(area){
-  return annualGoal(area)/6;
+function setupLogin(){
+
+  const user = document.getElementById("setupUser").value.trim();
+  const pass = document.getElementById("setupPass").value;
+
+  if(!user || !pass){
+
+    alert("Bitte Benutzername und Passwort eingeben.");
+    return;
+
+  }
+
+  db.login={user,pass};
+
+  saveDB();
+
+  document.getElementById("loginSetup").classList.add("hidden");
+  document.getElementById("loginForm").classList.remove("hidden");
+
+  document.getElementById("loginUser").value=user;
+
 }
 
-function totalMonthlyGoal(){
-  return settings.totalGoal/6;
+function doLogin(){
+
+  const user=document.getElementById("loginUser").value.trim();
+  const pass=document.getElementById("loginPass").value;
+
+  if(
+    db.login &&
+    user===db.login.user &&
+    pass===db.login.pass
+  ){
+
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+
+    initApp();
+
+  }else{
+
+    document.getElementById("loginError").classList.remove("hidden");
+
+  }
+
 }
 
-function areaActual(area,months){
-  return months.reduce((sum,m)=>{
-    return sum+(data[m]?.[area]?.revenue||0);
-  },0);
+function logout(){
+
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("loginScreen").classList.remove("hidden");
+
+  document.getElementById("loginPass").value="";
+
 }
 
-function areaCustomers(area,months){
-  return months.reduce((sum,m)=>{
-    return sum+(data[m]?.[area]?.customers||0);
-  },0);
+/* =========================================================
+   APP INITIALISIERUNG
+========================================================= */
+
+function initApp(){
+
+  const month=getCurrentMonth();
+
+  setAllMonths(month);
+
+  renderPositionSelects();
+
+  loadSettingsUI();
+
+  updateEverything();
+
 }
 
-function areaContacts(area,months){
-  return months.reduce((sum,m)=>{
-    return sum+(data[m]?.[area]?.contacts||0);
-  },0);
-}
+function setAllMonths(month){
 
-function areaSeries(area,months){
-  return months.reduce((sum,m)=>{
-    return sum+(data[m]?.[area]?.series||0);
-  },0);
+  const ids=[
+    "dashMonth",
+    "eigenMonth",
+    "zornMonth",
+    "biewerMonth",
+    "deckersMonth",
+    "gesamtMonth",
+    "analyseMonth",
+    "vergMonth"
+  ];
+
+  ids.forEach(id=>{
+
+    const el=document.getElementById(id);
+
+    if(el) el.value=month;
+
+  });
+
+  ["eigen","zorn","biewer","deckers"].forEach(section=>{
+    fillSection(section,month);
+  });
+
 }
 
 /* =========================================================
    NAVIGATION
 ========================================================= */
 
-document.querySelectorAll("#mainNav button").forEach(button=>{
-  button.addEventListener("click",()=>{
-    document.querySelectorAll("#mainNav button")
-      .forEach(b=>b.classList.remove("active"));
+function showPage(page){
 
-    button.classList.add("active");
-
-    document.querySelectorAll(".page")
-      .forEach(p=>p.classList.remove("active"));
-
-    document
-      .getElementById(button.dataset.page)
-      .classList.add("active");
-
-    if(button.dataset.page==="dashboardPage"){
-      renderDashboard();
-    }
-
-    if(
-      button.dataset.page==="ownPage" ||
-      button.dataset.page==="zornPage" ||
-      button.dataset.page==="biewerPage" ||
-      button.dataset.page==="deckersPage"
-    ){
-      renderAreaPage(button.dataset.page);
-    }
-
-    if(button.dataset.page==="analysisPage"){
-      renderAnalysis();
-    }
-
-    if(button.dataset.page==="settingsPage"){
-      renderSettings();
-    }
+  document.querySelectorAll(".page").forEach(p=>{
+    p.classList.add("hidden");
+    p.classList.remove("printActive");
   });
-});
+
+  const target=document.getElementById("page-"+page);
+
+  target.classList.remove("hidden");
+
+  if(page==="analysen"){
+    document.getElementById("analysisPrintArea").classList.add("printActive");
+    renderAnalysis();
+  }
+
+  document.querySelectorAll(".nav button").forEach(b=>{
+    b.classList.remove("active");
+  });
+
+  const nav=document.getElementById("nav-"+page);
+
+  if(nav) nav.classList.add("active");
+
+  if(page==="verlauf") renderVerlauf();
+  if(page==="verguetung") renderVerguetung();
+  if(page==="karriere") renderCareer();
+  if(page==="gesamt") updateGesamt();
+  if(page==="dashboard") updateDashboard();
+  if(page==="fehlt") renderFehlt();
+
+}
+
+/* =========================================================
+   MONATE
+========================================================= */
+
+function setGlobalMonth(month){
+
+  if(!month) return;
+
+  setAllMonths(month);
+
+  updateEverything();
+
+}
+
+function loadSectionMonth(section,month){
+
+  if(!month) return;
+
+  fillSection(section,month);
+  updateEverything();
+
+}
+
+function loadSelectedMonth(section){
+
+  const month=document.getElementById(section+"Month").value;
+
+  fillSection(section,month);
+  updateEverything();
+
+}
+
+function fillSection(section,month){
+
+  const data=getMonthData(month)[section];
+
+  document.getElementById(section+"Umsatz").value=data.umsatz || 0;
+  document.getElementById(section+"Kunden").value=data.kunden || 0;
+  document.getElementById(section+"Kontakte").value=data.kontakte || 0;
+  document.getElementById(section+"Termine").value=data.termine || 0;
+  document.getElementById(section+"Notizen").value=data.notizen || "";
+
+  updateSectionCards(section);
+
+}
+
+/* =========================================================
+   ZIELE
+========================================================= */
+
+function getMonthlyGoal(section){
+
+  if(section==="eigen"){
+    return Number(db.settings.eigenziel)/6;
+  }
+
+  return Number(db.settings.teamziel)/6/3;
+
+}
+
+function updateSectionCards(section){
+
+  const month=document.getElementById(section+"Month").value;
+  const data=getMonthData(month)[section];
+
+  const goal=getMonthlyGoal(section);
+  const ist=Number(data.umsatz || 0);
+  const fehlt=Math.max(0,goal-ist);
+  const percent=goal>0 ? (ist/goal)*100 : 0;
+
+  document.getElementById(section+"Goal").textContent=euro(goal);
+  document.getElementById(section+"Ist").textContent=euro(ist);
+  document.getElementById(section+"Fehlt").textContent=euro(fehlt);
+  document.getElementById(section+"Erreicht").textContent=
+    Math.round(percent)+" %";
+
+}
+
+/* =========================================================
+   LIVE EINGABE
+========================================================= */
+
+function liveSectionUpdate(section){
+
+  updateSectionCards(section);
+
+}
+
+function saveSection(section){
+
+  const month=document.getElementById(section+"Month").value;
+
+  if(!month){
+
+    alert("Bitte zuerst einen Monat auswählen.");
+    return;
+
+  }
+
+  const data=getMonthData(month)[section];
+
+  data.umsatz=Number(document.getElementById(section+"Umsatz").value || 0);
+  data.kunden=Number(document.getElementById(section+"Kunden").value || 0);
+  data.kontakte=Number(document.getElementById(section+"Kontakte").value || 0);
+  data.termine=Number(document.getElementById(section+"Termine").value || 0);
+  data.notizen=document.getElementById(section+"Notizen").value || "";
+
+  saveDB();
+
+  updateEverything();
+
+  alert(getSectionName(section)+" für "+getMonthName(month)+" gespeichert.");
+
+}
+
+/* =========================================================
+   POSITIONEN
+========================================================= */
+
+function renderPositionSelects(){
+
+  const selects=[
+    "dashboardPosition",
+    "vergMyPosition",
+    "karrierePosition",
+    "posEigen",
+    "posZorn",
+    "posBiewer",
+    "posDeckers"
+  ];
+
+  selects.forEach(id=>{
+
+    const select=document.getElementById(id);
+
+    if(!select) return;
+
+    select.innerHTML="";
+
+    db.positions.forEach(p=>{
+
+      const option=document.createElement("option");
+
+      option.value=p.name;
+      option.textContent=p.name+" ("+p.rate+" ‰)";
+
+      select.appendChild(option);
+
+    });
+
+  });
+
+  document.getElementById("dashboardPosition").value=db.myPosition;
+  document.getElementById("vergMyPosition").value=db.myPosition;
+  document.getElementById("karrierePosition").value=db.myPosition;
+
+  document.getElementById("posEigen").value=db.teamPositions.eigen;
+  document.getElementById("posZorn").value=db.teamPositions.zorn;
+  document.getElementById("posBiewer").value=db.teamPositions.biewer;
+  document.getElementById("posDeckers").value=db.teamPositions.deckers;
+
+}
+
+function changeMyPosition(position){
+
+  db.myPosition=position;
+  db.teamPositions.eigen=position;
+
+  saveDB();
+
+  renderPositionSelects();
+  updateEverything();
+
+}
+
+function saveTeamPositions(){
+
+  db.teamPositions.eigen=document.getElementById("posEigen").value;
+  db.teamPositions.zorn=document.getElementById("posZorn").value;
+  db.teamPositions.biewer=document.getElementById("posBiewer").value;
+  db.teamPositions.deckers=document.getElementById("posDeckers").value;
+
+  db.myPosition=db.teamPositions.eigen;
+
+  saveDB();
+
+  renderPositionSelects();
+  updateEverything();
+
+}
 
 /* =========================================================
    DASHBOARD
 ========================================================= */
 
-function renderDashboard(){
+function updateDashboard(){
 
-  document.getElementById("dashTotalGoal").textContent=
-    euro(settings.totalGoal);
+  const month=document.getElementById("dashMonth").value || getCurrentMonth();
+  const data=getMonthData(month);
 
-  const start=settings.startMonth;
-  const months=sixMonths(start);
+  const eigen=Number(data.eigen.umsatz);
+  const zorn=Number(data.zorn.umsatz);
+  const biewer=Number(data.biewer.umsatz);
+  const deckers=Number(data.deckers.umsatz);
 
-  let totalActual=0;
+  const team=zorn+biewer+deckers;
+  const total=eigen+team;
 
-  const cards=Object.keys(AREAS).map(area=>{
-    const actual=areaActual(area,months);
-    const goal=annualGoal(area);
-    const missing=Math.max(goal-actual,0);
-    const achieved=goal ? actual/goal*100 : 0;
+  const goal=Number(db.settings.gesamtziel);
+  const progress=goal>0 ? total/goal*100 : 0;
 
-    totalActual+=actual;
+  const myPos=getPosition(db.myPosition);
 
-    return `
-      <div class="metric goal-card">
-        <div class="label">${AREAS[area].name} · ${AREAS[area].share*100}%</div>
-        <div class="value">${euro(actual)}</div>
-        <div class="sub">
-          Ziel: ${euro(goal)} · ${percent(achieved)}
-        </div>
-        <div class="bar">
-          <div class="fill" style="width:${clamp(achieved,0,100)}%"></div>
-        </div>
-      </div>
-    `;
-  }).join("");
+  const myGross=eigen*myPos.rate/1000;
 
-  document.getElementById("dashboardMetrics").innerHTML=cards;
+  const myHold=myGross*myPos.hold/100;
 
-  document.getElementById("dashTotalActual").textContent=
-    euro(totalActual);
+  const teamIncome=getTeamDifferenceIncome(month);
 
-  const totalAchieved=
-    settings.totalGoal
-      ? totalActual/settings.totalGoal*100
-      : 0;
+  document.getElementById("dashboardRate").value=myPos.rate+" ‰";
 
-  document.getElementById("dashTotalPercent").textContent=
-    percent(totalAchieved)+" erreicht";
+  document.getElementById("dashEigenUmsatz").textContent=euro(eigen);
+  document.getElementById("dashTeamUmsatz").textContent=euro(team);
+  document.getElementById("dashGesamtUmsatz").textContent=euro(total);
+  document.getElementById("dashZiel").textContent=Math.round(progress)+" %";
 
-  document.getElementById("dashTotalMissing").textContent=
-    euro(Math.max(settings.totalGoal-totalActual,0))+" fehlen";
+  document.getElementById("dashMeinVerdienst").textContent=euro(myGross-myHold);
+  document.getElementById("dashTeamVerdienst").textContent=euro(teamIncome.gross);
+  document.getElementById("dashGesamtVerdienst").textContent=euro(
+    (myGross-myHold)+teamIncome.net
+  );
 
-  document.getElementById("dashTotalFill").style.width=
-    clamp(totalAchieved,0,100)+"%";
+  document.getElementById("dashEinbehalt").textContent=euro(
+    myHold+teamIncome.hold
+  );
 
-  document.getElementById("dashboardTable").innerHTML=
-    Object.keys(AREAS).map(area=>{
-      const actual=areaActual(area,months);
-      const goal=annualGoal(area);
-      const missing=Math.max(goal-actual,0);
-      const achieved=goal ? actual/goal*100 : 0;
+  document.getElementById("dashGoalText").textContent=
+    euro(total)+" von "+euro(goal);
 
-      return `
-        <tr>
-          <td><strong>${AREAS[area].name}</strong></td>
-          <td>${AREAS[area].share*100}%</td>
-          <td>${euro(goal)}</td>
-          <td>${euro(monthlyGoal(area))}</td>
-          <td>${euro(actual)}</td>
-          <td>${euro(missing)}</td>
-          <td class="status ${achieved>=100?"ok":"open"}">
-            ${percent(achieved)}
-          </td>
-        </tr>
-      `;
-    }).join("");
+  document.getElementById("dashGoalPercent").textContent=
+    Math.round(progress)+" %";
+
+  document.getElementById("dashGoalBar").style.width=
+    Math.min(progress,100)+"%";
+
+  const fehl=Math.max(0,goal-total);
+
+  document.getElementById("dashNotice").innerHTML=
+    fehl>0
+      ? "Bis zum Gesamtziel fehlen aktuell <strong>"+euro(fehl)+"</strong>."
+      : "🎉 Das Gesamtziel wurde erreicht.";
+
 }
 
 /* =========================================================
-   BEREICHSSEITEN
+   GESAMT
 ========================================================= */
 
-function renderAreaPage(pageId){
+function updateGesamt(){
 
-  const areaMap={
-    ownPage:"own",
-    zornPage:"zorn",
-    biewerPage:"biewer",
-    deckersPage:"deckers"
-  };
+  const month=document.getElementById("gesamtMonth").value || getCurrentMonth();
 
-  const area=areaMap[pageId];
-  const container=document.getElementById(pageId);
+  const data=getMonthData(month);
 
-  if(!container.dataset.ready){
+  const sections=["eigen","zorn","biewer","deckers"];
 
-    container.innerHTML=`
+  const sum=(key)=>sections.reduce((total,s)=>{
+    return total+Number(data[s][key]||0);
+  },0);
+
+  document.getElementById("gesamtEigen").textContent=euro(data.eigen.umsatz);
+  document.getElementById("gesamtZorn").textContent=euro(data.zorn.umsatz);
+  document.getElementById("gesamtBiewer").textContent=euro(data.biewer.umsatz);
+  document.getElementById("gesamtDeckers").textContent=euro(data.deckers.umsatz);
+
+  document.getElementById("gesamtTotal").textContent=euro(sum("umsatz"));
+  document.getElementById("gesamtKunden").textContent=number(sum("kunden"));
+  document.getElementById("gesamtKontakte").textContent=number(sum("kontakte"));
+  document.getElementById("gesamtTermine").textContent=number(sum("termine"));
+
+}
+
+/* =========================================================
+   WAS FEHLT
+========================================================= */
+
+function renderFehlt(){
+
+  const month=document.getElementById("dashMonth").value || getCurrentMonth();
+
+  const data=getMonthData(month);
+
+  const sections=["eigen","zorn","biewer","deckers"];
+
+  let html="";
+
+  sections.forEach(section=>{
+
+    const goal=getMonthlyGoal(section);
+    const ist=Number(data[section].umsatz);
+    const fehlt=Math.max(0,goal-ist);
+
+    const kundenFehlen=
+      db.settings.proKunde>0
+        ? Math.ceil(fehlt/db.settings.proKunde)
+        : 0;
+
+    const kontakteNoetig=
+      db.settings.abschlussquote>0
+        ? Math.ceil(kundenFehlen/(db.settings.abschlussquote/100))
+        : 0;
+
+    html+=`
+
       <div class="panel">
 
-        <div class="area-title">
-          <div>
-            <h2>${AREAS[area].name}${area==="own"?" – Matthias":""}</h2>
-            <span class="badge">
-              ${AREAS[area].share*100}% des Gesamtziels
-            </span>
+        <h3>${getSectionName(section)}</h3>
+
+        <div class="cards">
+
+          <div class="card small">
+            <div class="label">Fehlvolumen</div>
+            <div class="value redtxt">${euro(fehlt)}</div>
           </div>
 
-          <div class="metric">
-            <div class="label">Jahresziel</div>
-            <div class="value" id="${area}-annual-goal"></div>
-          </div>
-        </div>
-
-        <div class="month-picker">
-          <div class="field">
-            <label>Monat auswählen</label>
-            <input
-              type="month"
-              id="${area}-month"
-              value="${settings.startMonth}"
-              onchange="loadAreaMonth('${area}')">
+          <div class="card small">
+            <div class="label">Benötigte Kunden</div>
+            <div class="value">${kundenFehlen}</div>
           </div>
 
-          <button
-            class="primary"
-            onclick="loadAreaMonth('${area}')">
-            Monat laden
-          </button>
-        </div>
-
-        <div
-          class="month-buttons"
-          id="${area}-month-buttons">
-        </div>
-
-        <div class="grid grid2">
-
-          <div class="field">
-            <label>Umsatz (€)</label>
-            <input
-              type="number"
-              id="${area}-revenue"
-              min="0"
-              step="100">
+          <div class="card small">
+            <div class="label">Benötigte Kontakte</div>
+            <div class="value">${kontakteNoetig}</div>
           </div>
 
-          <div class="field">
-            <label>Kunden gewonnen</label>
-            <input
-              type="number"
-              id="${area}-customers"
-              min="0"
-              step="1">
-          </div>
-
-          <div class="field">
-            <label>Kontakte / Gespräche</label>
-            <input
-              type="number"
-              id="${area}-contacts"
-              min="0"
-              step="1">
-          </div>
-
-          <div class="field">
-            <label>Serientermine</label>
-            <input
-              type="number"
-              id="${area}-series"
-              min="0"
-              step="1">
+          <div class="card small">
+            <div class="label">Aktueller Umsatz</div>
+            <div class="value">${euro(ist)}</div>
           </div>
 
         </div>
-
-        <div class="field">
-          <label>Notizen</label>
-          <textarea id="${area}-notes"
-            placeholder="Notizen zu diesem Monat..."></textarea>
-        </div>
-
-        <div class="panel">
-          <h3>Monatsziel</h3>
-
-          <div class="grid grid4">
-
-            <div class="metric">
-              <div class="label">SOLL</div>
-              <div class="value" id="${area}-goal"></div>
-            </div>
-
-            <div class="metric">
-              <div class="label">IST</div>
-              <div class="value" id="${area}-actual"></div>
-            </div>
-
-            <div class="metric">
-              <div class="label">FEHLT</div>
-              <div class="value" id="${area}-missing"></div>
-            </div>
-
-            <div class="metric">
-              <div class="label">ERREICHT</div>
-              <div class="value" id="${area}-percent"></div>
-            </div>
-
-          </div>
-
-          <div class="bar">
-            <div class="fill" id="${area}-fill"></div>
-          </div>
-        </div>
-
-        <button
-          class="primary"
-          onclick="saveAreaMonth('${area}')">
-          Monat speichern
-        </button>
 
       </div>
+
     `;
 
-    container.dataset.ready="1";
+  });
+
+  document.getElementById("fehltContent").innerHTML=html;
+
+}
+
+/* =========================================================
+   VERLAUF
+========================================================= */
+
+function getSortedMonths(){
+
+  return Object.keys(db.months).sort();
+
+}
+
+function drawChart(canvasId,labels,values,title){
+
+  const canvas=document.getElementById(canvasId);
+
+  if(!canvas) return;
+
+  const ctx=canvas.getContext("2d");
+
+  const width=canvas.width;
+  const height=canvas.height;
+
+  ctx.clearRect(0,0,width,height);
+
+  ctx.fillStyle="#101318";
+  ctx.fillRect(0,0,width,height);
+
+  ctx.fillStyle="#f5f6f7";
+  ctx.font="bold 20px Arial";
+  ctx.fillText(title,30,35);
+
+  const max=Math.max(...values,1);
+
+  const chartX=70;
+  const chartY=60;
+  const chartW=width-110;
+  const chartH=height-110;
+
+  ctx.strokeStyle="#303641";
+  ctx.lineWidth=1;
+
+  for(let i=0;i<=5;i++){
+
+    const y=chartY+(chartH/5)*i;
+
+    ctx.beginPath();
+    ctx.moveTo(chartX,y);
+    ctx.lineTo(chartX+chartW,y);
+    ctx.stroke();
+
   }
 
-  document.getElementById(`${area}-annual-goal`).textContent=
-    euro(annualGoal(area));
+  const barW=chartW/Math.max(values.length,1)*0.65;
 
-  renderMonthButtons(area);
+  values.forEach((value,index)=>{
 
-  loadAreaMonth(area);
+    const x=chartX+(chartW/Math.max(values.length,1))*index+20;
+    const h=(value/max)*chartH;
+    const y=chartY+chartH-h;
+
+    ctx.fillStyle="#c9973e";
+    ctx.fillRect(x,y,barW,h);
+
+    ctx.fillStyle="#a9afbb";
+    ctx.font="12px Arial";
+
+    const label=labels[index] || "";
+
+    ctx.save();
+    ctx.translate(x+barW/2,chartY+chartH+18);
+    ctx.rotate(-0.35);
+    ctx.fillText(label,-30,0);
+    ctx.restore();
+
+  });
+
 }
 
-function renderMonthButtons(area){
+function renderVerlauf(){
 
-  const container=
-    document.getElementById(`${area}-month-buttons`);
+  const section=document.getElementById("verlaufBereich").value;
 
-  if(!container) return;
+  const months=getSortedMonths();
 
-  const months=sixMonths(settings.startMonth);
+  const labels=[];
+  const values=[];
 
-  container.innerHTML=months.map(month=>`
-    <button
-      id="${area}-button-${month}"
-      onclick="selectAreaMonth('${area}','${month}')">
-      ${monthLabel(month)}
-    </button>
-  `).join("");
+  months.forEach(month=>{
+
+    const data=getMonthData(month);
+
+    let value=0;
+
+    if(section==="gesamt"){
+
+      value=
+        Number(data.eigen.umsatz)+
+        Number(data.zorn.umsatz)+
+        Number(data.biewer.umsatz)+
+        Number(data.deckers.umsatz);
+
+    }else{
+
+      value=Number(data[section].umsatz);
+
+    }
+
+    labels.push(getMonthName(month).substring(0,3));
+    values.push(value);
+
+  });
+
+  drawChart(
+    "verlaufChart",
+    labels,
+    values,
+    "Umsatzentwicklung"
+  );
+
 }
 
-function selectAreaMonth(area,month){
+/* =========================================================
+   VERGÜTUNG
+========================================================= */
 
-  document.getElementById(`${area}-month`).value=month;
+function calculateCommission(umsatz,positionName){
 
-  loadAreaMonth(area);
-}
+  const pos=getPosition(positionName);
 
-function loadAreaMonth(area){
+  const gross=Number(umsatz)*Number(pos.rate)/1000;
 
-  const month=
-    document.getElementById(`${area}-month`).value ||
-    settings.startMonth;
+  const hold=gross*Number(pos.hold)/100;
 
-  const record=ensureMonthArea(month,area);
-
-  document.getElementById(`${area}-month`).value=month;
-
-  document.getElementById(`${area}-revenue`).value=
-    record.revenue||0;
-
-  document.getElementById(`${area}-customers`).value=
-    record.customers||0;
-
-  document.getElementById(`${area}-contacts`).value=
-    record.contacts||0;
-
-  document.getElementById(`${area}-series`).value=
-    record.series||0;
-
-  document.getElementById(`${area}-notes`).value=
-    record.notes||"";
-
-  document.querySelectorAll(`[id^="${area}-button-"]`)
-    .forEach(button=>{
-      button.classList.toggle(
-        "selected",
-        button.id===`${area}-button-${month}`
-      );
-    });
-
-  updateAreaPreview(area,month);
-}
-
-function updateAreaPreview(area,month){
-
-  const revenue=
-    Number(document.getElementById(`${area}-revenue`).value)||0;
-
-  const goal=monthlyGoal(area);
-  const missing=Math.max(goal-revenue,0);
-  const achieved=goal ? revenue/goal*100 : 0;
-
-  document.getElementById(`${area}-goal`).textContent=
-    euro(goal);
-
-  document.getElementById(`${area}-actual`).textContent=
-    euro(revenue);
-
-  document.getElementById(`${area}-missing`).textContent=
-    euro(missing);
-
-  document.getElementById(`${area}-percent`).textContent=
-    percent(achieved);
-
-  document.getElementById(`${area}-fill`).style.width=
-    clamp(achieved,0,100)+"%";
-}
-
-function saveAreaMonth(area){
-
-  const month=
-    document.getElementById(`${area}-month`).value;
-
-  if(!month){
-    alert("Bitte zuerst einen Monat auswählen.");
-    return;
-  }
-
-  data[month]=data[month]||{};
-
-  data[month][area]={
-    revenue:Number(
-      document.getElementById(`${area}-revenue`).value
-    )||0,
-
-    customers:Number(
-      document.getElementById(`${area}-customers`).value
-    )||0,
-
-    contacts:Number(
-      document.getElementById(`${area}-contacts`).value
-    )||0,
-
-    series:Number(
-      document.getElementById(`${area}-series`).value
-    )||0,
-
-    notes:
-      document.getElementById(`${area}-notes`).value||""
+  return {
+    gross,
+    hold,
+    net:gross-hold,
+    rate:pos.rate
   };
 
-  saveAll();
+}
 
-  updateAreaPreview(area,month);
+function getTeamDifferenceIncome(month){
 
-  alert(
-    `${AREAS[area].name} – ${monthLabel(month)} wurde gespeichert.`
+  const data=getMonthData(month);
+
+  const myPos=getPosition(db.myPosition);
+
+  let gross=0;
+  let hold=0;
+  let net=0;
+
+  ["zorn","biewer","deckers"].forEach(section=>{
+
+    const teamPos=getPosition(db.teamPositions[section]);
+
+    const umsatz=Number(data[section].umsatz||0);
+
+    const difference=Math.max(0,myPos.rate-teamPos.rate);
+
+    const commission=umsatz*difference/1000;
+
+    const commissionHold=commission*myPos.hold/100;
+
+    gross+=commission;
+    hold+=commissionHold;
+    net+=commission-commissionHold;
+
+  });
+
+  return {gross,hold,net};
+
+}
+
+function renderVerguetung(){
+
+  const month=document.getElementById("vergMonth").value || getCurrentMonth();
+
+  const data=getMonthData(month);
+
+  const myPos=getPosition(db.myPosition);
+
+  document.getElementById("vergMyRate").value=myPos.rate+" ‰";
+
+  const eigenCalc=calculateCommission(
+    data.eigen.umsatz,
+    db.myPosition
   );
+
+  document.getElementById("vergEigenUmsatz").textContent=
+    euro(data.eigen.umsatz);
+
+  document.getElementById("vergEigenBrutto").textContent=
+    euro(eigenCalc.gross);
+
+  document.getElementById("vergEigenEinbehalt").textContent=
+    euro(eigenCalc.hold);
+
+  document.getElementById("vergEigenNetto").textContent=
+    euro(eigenCalc.net);
+
+  const persons=[
+    {key:"zorn",name:"Zorn"},
+    {key:"biewer",name:"Biewer"},
+    {key:"deckers",name:"Deckers"}
+  ];
+
+  let html="";
+
+  persons.forEach(person=>{
+
+    const position=db.teamPositions[person.key];
+
+    const pos=getPosition(position);
+
+    const umsatz=Number(data[person.key].umsatz||0);
+
+    const own=calculateCommission(umsatz,position);
+
+    const difference=Math.max(
+      0,
+      Number(myPos.rate)-Number(pos.rate)
+    );
+
+    const differenceGross=
+      umsatz*difference/1000;
+
+    html+=`
+
+      <tr>
+
+        <td><strong>${person.name}</strong></td>
+
+        <td>
+          <select onchange="changeTeamPosition('${person.key}',this.value)">
+            ${db.positions.map(p=>`
+              <option value="${p.name}"
+                ${p.name===position?"selected":""}>
+                ${p.name}
+              </option>
+            `).join("")}
+          </select>
+        </td>
+
+        <td>${euro(umsatz)}</td>
+
+        <td>${pos.rate} ‰</td>
+
+        <td>${euro(own.net)}</td>
+
+        <td>${difference.toLocaleString("de-DE")} ‰</td>
+
+        <td class="green"><strong>${euro(differenceGross)}</strong></td>
+
+      </tr>
+
+    `;
+
+  });
+
+  document.getElementById("vergTeamTable").innerHTML=html;
+
+  const teamIncome=getTeamDifferenceIncome(month);
+
+  const totalGross=eigenCalc.gross+teamIncome.gross;
+  const totalHold=eigenCalc.hold+teamIncome.hold;
+  const totalNet=totalGross-totalHold;
+
+  document.getElementById("vergTotalEigen").textContent=
+    euro(eigenCalc.net);
+
+  document.getElementById("vergTotalTeam").textContent=
+    euro(teamIncome.net);
+
+  document.getElementById("vergTotalBrutto").textContent=
+    euro(totalGross);
+
+  document.getElementById("vergTotalNetto").textContent=
+    euro(totalNet);
+
+}
+
+function changeTeamPosition(section,position){
+
+  db.teamPositions[section]=position;
+
+  saveDB();
+
+  renderPositionSelects();
+  updateEverything();
+
+}
+
+/* =========================================================
+   ANALYSEN
+========================================================= */
+
+function previousMonth(month){
+
+  const [year,mon]=month.split("-").map(Number);
+
+  const d=new Date(year,mon-2,1);
+
+  return d.getFullYear()+"-"+
+    String(d.getMonth()+1).padStart(2,"0");
+
+}
+
+function getAnalysisData(section,month,mode){
+
+  const result={
+    umsatz:0,
+    kunden:0,
+    kontakte:0,
+    termine:0,
+    labels:[],
+    values:[]
+  };
+
+  let months=[];
+
+  if(mode==="month"){
+
+    months=[month];
+
+  }else{
+
+    let cursor=month;
+
+    for(let i=0;i<6;i++){
+
+      months.unshift(cursor);
+
+      cursor=previousMonth(cursor);
+
+    }
+
+  }
+
+  months.forEach(m=>{
+
+    const data=getMonthData(m);
+
+    let umsatz=0;
+    let kunden=0;
+    let kontakte=0;
+    let termine=0;
+
+    if(section==="gesamt"){
+
+      ["eigen","zorn","biewer","deckers"].forEach(s=>{
+
+        umsatz+=Number(data[s].umsatz||0);
+        kunden+=Number(data[s].kunden||0);
+        kontakte+=Number(data[s].kontakte||0);
+        termine+=Number(data[s].termine||0);
+
+      });
+
+    }else{
+
+      umsatz=Number(data[section].umsatz||0);
+      kunden=Number(data[section].kunden||0);
+      kontakte=Number(data[section].kontakte||0);
+      termine=Number(data[section].termine||0);
+
+    }
+
+    result.umsatz+=umsatz;
+    result.kunden+=kunden;
+    result.kontakte+=kontakte;
+    result.termine+=termine;
+
+    result.labels.push(getMonthName(m).substring(0,3));
+    result.values.push(umsatz);
+
+  });
+
+  return result;
+
+}
+
+function renderAnalysis(){
+
+  const mode=document.getElementById("analyseArt").value;
+  const month=document.getElementById("analyseMonth").value;
+  const section=document.getElementById("analyseBereich").value;
+
+  if(!month) return;
+
+  const data=getAnalysisData(section,month,mode);
+
+  const goal=
+    mode==="month"
+      ? (
+          section==="gesamt"
+            ? db.settings.gesamtziel/6
+            : getMonthlyGoal(section)
+        )
+      : (
+          section==="gesamt"
+            ? db.settings.gesamtziel
+            : (
+              section==="eigen"
+                ? db.settings.eigenziel
+                : db.settings.teamziel/3
+            )
+        );
+
+  const quote=
+    data.kontakte>0
+      ? data.kunden/data.kontakte*100
+      : 0;
+
+  const ziel=
+    goal>0
+      ? data.umsatz/goal*100
+      : 0;
+
+  const fehlt=Math.max(0,goal-data.umsatz);
+
+  let previousValue=0;
+
+  if(mode==="month"){
+
+    const previous=previousMonth(month);
+
+    previousValue=getAnalysisData(
+      section,
+      previous,
+      "month"
+    ).umsatz;
+
+  }
+
+  const development=
+    previousValue>0
+      ? ((data.umsatz-previousValue)/previousValue*100)
+      : null;
+
+  document.getElementById("analysisTitle").textContent=
+    getSectionName(section==="gesamt"?"gesamt":section)+
+    " – "+
+    (
+      mode==="month"
+        ? getMonthName(month)
+        : "6-Monats-Analyse bis "+getMonthName(month)
+    );
+
+  document.getElementById("analyseUmsatz").textContent=euro(data.umsatz);
+  document.getElementById("analyseKunden").textContent=number(data.kunden);
+  document.getElementById("analyseKontakte").textContent=number(data.kontakte);
+  document.getElementById("analyseTermine").textContent=number(data.termine);
+
+  document.getElementById("analyseQuote").textContent=
+    quote.toFixed(1).replace(".",",")+" %";
+
+  document.getElementById("analyseZiel").textContent=
+    ziel.toFixed(1).replace(".",",")+" %";
+
+  document.getElementById("analyseFehlt").textContent=euro(fehlt);
+
+  document.getElementById("analyseVormonat").textContent=
+    development===null
+      ? "–"
+      : development.toFixed(1).replace(".",",")+" %";
+
+  drawChart(
+    "analyseChart",
+    data.labels,
+    data.values,
+    "Umsatzentwicklung"
+  );
+
+  const targetQuote=Number(db.settings.abschlussquote);
+
+  let text="";
+
+  if(ziel>=100){
+    text+="<strong>Stärke:</strong> Das Umsatzziel wurde erreicht oder übertroffen. ";
+  }else{
+    text+="<strong>Handlungsfeld:</strong> Zum Ziel fehlen noch "+euro(fehlt)+". ";
+  }
+
+  if(quote>=targetQuote){
+    text+="Die Abschlussquote liegt im Zielbereich. ";
+  }else{
+    text+="Die Abschlussquote liegt unter dem hinterlegten Ziel von "+targetQuote+" %. ";
+  }
+
+  if(fehlt>0 && db.settings.proKunde>0){
+
+    const customers=Math.ceil(fehlt/db.settings.proKunde);
+
+    const contacts=Math.ceil(
+      customers/(db.settings.abschlussquote/100)
+    );
+
+    text+="Für das fehlende Volumen entsprechen das ungefähr <strong>"+
+      customers+" weitere Kunden</strong> bzw. "+
+      "<strong>"+contacts+" notwendige Kontakte</strong> bei der hinterlegten Zielquote.";
+
+  }
+
+  document.getElementById("analyseText").innerHTML=text;
+
+}
+
+function printAnalysis(){
+
+  document.querySelectorAll(".page").forEach(p=>{
+    p.classList.add("hidden");
+    p.classList.remove("printActive");
+  });
+
+  const area=document.getElementById("analysisPrintArea");
+
+  area.classList.remove("hidden");
+  area.classList.add("printActive");
+
+  window.print();
+
+}
+
+/* =========================================================
+   KARRIERE
+========================================================= */
+
+function renderCareer(){
+
+  const positionName=db.myPosition;
+
+  const current=getPosition(positionName);
+
+  const monthsBack=
+    Number(document.getElementById("karriereMonths").value);
+
+  const end=document.getElementById("dashMonth").value || getCurrentMonth();
+
+  let months=[];
+  let cursor=end;
+
+  for(let i=0;i<monthsBack;i++){
+
+    months.unshift(cursor);
+    cursor=previousMonth(cursor);
+
+  }
+
+  let eigenTotal=0;
+  let teamTotal=0;
+
+  months.forEach(month=>{
+
+    const data=getMonthData(month);
+
+    eigenTotal+=Number(data.eigen.umsatz||0);
+
+    teamTotal+=
+      Number(data.zorn.umsatz||0)+
+      Number(data.biewer.umsatz||0)+
+      Number(data.deckers.umsatz||0);
+
+  });
+
+  const eigenReq=Number(current.eigen||0);
+  const teamReq=Number(current.team||0);
+
+  const eigenProgress=
+    eigenReq>0
+      ? Math.min(100,eigenTotal/eigenReq*100)
+      : 100;
+
+  const teamProgress=
+    teamReq>0
+      ? Math.min(100,teamTotal/teamReq*100)
+      : 100;
+
+  document.getElementById("careerContent").innerHTML=`
+
+    <h3>${current.name}</h3>
+
+    <div class="notice">
+      Aktueller Provisionssatz:
+      <strong>${current.rate} ‰</strong>
+      · Provisionseinbehalt:
+      <strong>${current.hold} %</strong>
+    </div>
+
+    <div class="progressRow" style="margin-top:20px">
+
+      <div class="progressTop">
+        <span>Eigenvolumen</span>
+        <strong>${euro(eigenTotal)} / ${eigenReq>0?euro(eigenReq):"Keine Vorgabe"}</strong>
+      </div>
+
+      <div class="bar">
+        <div class="fill" style="width:${eigenProgress}%"></div>
+      </div>
+
+      <div class="status">
+        ${eigenReq>0
+          ? Math.round(eigenProgress)+" % erreicht"
+          : "Für diese Position keine Eigenvolumen-Vorgabe hinterlegt"}
+      </div>
+
+    </div>
+
+    <div class="progressRow">
+
+      <div class="progressTop">
+        <span>Teamvolumen</span>
+        <strong>${euro(teamTotal)} / ${teamReq>0?euro(teamReq):"Keine Vorgabe"}</strong>
+      </div>
+
+      <div class="bar">
+        <div class="fill" style="width:${teamProgress}%"></div>
+      </div>
+
+      <div class="status">
+        ${teamReq>0
+          ? Math.round(teamProgress)+" % erreicht"
+          : "Für diese Position keine Teamvolumen-Vorgabe hinterlegt"}
+      </div>
+
+    </div>
+
+  `;
+
 }
 
 /* =========================================================
    EINSTELLUNGEN
 ========================================================= */
 
-function renderSettings(){
+function loadSettingsUI(){
 
-  document.getElementById("settingTotalGoal").value=
-    settings.totalGoal;
+  document.getElementById("setGesamtziel").value=db.settings.gesamtziel;
+  document.getElementById("setEigenziel").value=db.settings.eigenziel;
+  document.getElementById("setTeamziel").value=db.settings.teamziel;
+  document.getElementById("setProKunde").value=db.settings.proKunde;
+  document.getElementById("setAbschlussquote").value=db.settings.abschlussquote;
+  document.getElementById("setKontaktziel").value=db.settings.kontaktziel;
+  document.getElementById("setPartnerziel").value=db.settings.partnerziel;
+  document.getElementById("setSerienterminZiel").value=db.settings.serienterminZiel;
 
-  document.getElementById("settingRevenueCustomer").value=
-    settings.revenuePerCustomer;
+  renderPositionTable();
 
-  document.getElementById("settingOwnCustomers").value=
-    settings.ownCustomers;
-
-  document.getElementById("settingTeamCustomers").value=
-    settings.teamCustomers;
-
-  document.getElementById("settingCloseRate").value=
-    settings.closeRate;
-
-  document.getElementById("settingTargetCloseRate").value=
-    settings.targetCloseRate;
-
-  document.getElementById("settingContacts").value=
-    settings.contactsUntilDecember;
-
-  document.getElementById("settingSeriesPerWeek").value=
-    settings.seriesPerWeek;
-
-  document.getElementById("settingPartners").value=
-    settings.partnersPerSeries;
-
-  document.getElementById("settingStartMonth").value=
-    settings.startMonth;
 }
 
 function saveSettings(){
 
-  settings.totalGoal=
-    Number(document.getElementById("settingTotalGoal").value)||3500000;
+  db.settings.gesamtziel=Number(document.getElementById("setGesamtziel").value||0);
+  db.settings.eigenziel=Number(document.getElementById("setEigenziel").value||0);
+  db.settings.teamziel=Number(document.getElementById("setTeamziel").value||0);
+  db.settings.proKunde=Number(document.getElementById("setProKunde").value||0);
+  db.settings.abschlussquote=Number(document.getElementById("setAbschlussquote").value||0);
+  db.settings.kontaktziel=Number(document.getElementById("setKontaktziel").value||0);
+  db.settings.partnerziel=Number(document.getElementById("setPartnerziel").value||0);
+  db.settings.serienterminZiel=Number(document.getElementById("setSerienterminZiel").value||0);
 
-  settings.revenuePerCustomer=
-    Number(document.getElementById("settingRevenueCustomer").value)||50000;
+  saveDB();
 
-  settings.ownCustomers=
-    Number(document.getElementById("settingOwnCustomers").value)||21;
+  updateEverything();
 
-  settings.teamCustomers=
-    Number(document.getElementById("settingTeamCustomers").value)||49;
+  alert("Einstellungen gespeichert.");
 
-  settings.closeRate=
-    Number(document.getElementById("settingCloseRate").value)||50;
-
-  settings.targetCloseRate=
-    Number(document.getElementById("settingTargetCloseRate").value)||66;
-
-  settings.contactsUntilDecember=
-    Number(document.getElementById("settingContacts").value)||32;
-
-  settings.seriesPerWeek=
-    Number(document.getElementById("settingSeriesPerWeek").value)||1;
-
-  settings.partnersPerSeries=
-    Number(document.getElementById("settingPartners").value)||2;
-
-  settings.startMonth=
-    document.getElementById("settingStartMonth").value ||
-    "2026-08";
-
-  saveAll();
-
-  document.querySelectorAll(".page").forEach(p=>{
-    if(p.dataset.ready) delete p.dataset.ready;
-  });
-
-  renderDashboard();
-
-  alert("Einstellungen wurden gespeichert.");
 }
 
-/* =========================================================
-   ANALYSE
-========================================================= */
+function renderPositionTable(){
 
-function renderAnalysis(){
+  const tbody=document.getElementById("positionTable");
 
-  const type=document.getElementById("analysisType").value;
+  tbody.innerHTML=db.positions.map((p,index)=>`
 
-  const month=
-    document.getElementById("analysisMonth").value ||
-    settings.startMonth;
+    <tr>
 
-  document.getElementById("analysisMonth").value=month;
+      <td>
+        <input value="${p.name}"
+          onchange="updatePosition(${index},'name',this.value)">
+      </td>
 
-  const area=
-    document.getElementById("analysisArea").value;
+      <td>
+        <input type="number" step="0.1" value="${p.rate}"
+          onchange="updatePosition(${index},'rate',this.value)">
+      </td>
 
-  if(type==="month"){
-    renderSingleMonthAnalysis(area,month);
+      <td>
+        <input type="number" value="${p.eigen}"
+          onchange="updatePosition(${index},'eigen',this.value)">
+      </td>
+
+      <td>
+        <input type="number" value="${p.team}"
+          onchange="updatePosition(${index},'team',this.value)">
+      </td>
+
+      <td>
+        <input type="number" value="${p.quality}"
+          onchange="updatePosition(${index},'quality',this.value)">
+      </td>
+
+      <td>
+        <input type="number" value="${p.hold}"
+          onchange="updatePosition(${index},'hold',this.value)">
+      </td>
+
+      <td>
+        <button class="btn red" onclick="deletePosition(${index})">×</button>
+      </td>
+
+    </tr>
+
+  `).join("");
+
+}
+
+function updatePosition(index,key,value){
+
+  if(["rate","eigen","team","quality","hold"].includes(key)){
+    db.positions[index][key]=Number(value||0);
   }else{
-    renderSixMonthAnalysis(area,month);
-  }
-}
-
-function analysisTarget(area){
-  if(area==="all") return settings.totalGoal;
-  return annualGoal(area);
-}
-
-function analysisActual(area,months){
-
-  if(area==="all"){
-    return Object.keys(AREAS).reduce(
-      (sum,key)=>sum+areaActual(key,months),
-      0
-    );
+    db.positions[index][key]=value;
   }
 
-  return areaActual(area,months);
 }
 
-function analysisName(area){
-
-  if(area==="all") return "Gesamt";
-
-  return AREAS[area].name;
-}
-
-function renderSingleMonthAnalysis(area,month){
-
-  const months=[month];
-
-  const actual=analysisActual(area,months);
-
-  const goal=
-    area==="all"
-      ? totalMonthlyGoal()
-      : monthlyGoal(area);
-
-  const missing=Math.max(goal-actual,0);
-  const achieved=goal ? actual/goal*100 : 0;
-
-  const customerActual=
-    area==="all"
-      ? Object.keys(AREAS).reduce(
-          (sum,key)=>sum+areaCustomers(key,months),0)
-      : areaCustomers(area,months);
-
-  const contactActual=
-    area==="all"
-      ? Object.keys(AREAS).reduce(
-          (sum,key)=>sum+areaContacts(key,months),0)
-      : areaContacts(area,months);
-
-  const seriesActual=
-    area==="all"
-      ? Object.keys(AREAS).reduce(
-          (sum,key)=>sum+areaSeries(key,months),0)
-      : areaSeries(area,months);
-
-  document.getElementById("analysisResult").innerHTML=`
-
-    <div class="panel analysis-print">
-
-      <div class="analysis-header">
-        <div>
-          <h2>Analyse – ${analysisName(area)}</h2>
-          <p style="color:var(--muted);margin:5px 0;">
-            ${monthLabel(month)}
-          </p>
-        </div>
-
-        <span class="badge">Einzelmonat</span>
-      </div>
-
-      <div class="grid grid4" style="margin-top:16px;">
-
-        <div class="metric">
-          <div class="label">ZIEL</div>
-          <div class="value">${euro(goal)}</div>
-        </div>
-
-        <div class="metric">
-          <div class="label">IST</div>
-          <div class="value">${euro(actual)}</div>
-        </div>
-
-        <div class="metric">
-          <div class="label">FEHLT</div>
-          <div class="value">${euro(missing)}</div>
-        </div>
-
-        <div class="metric">
-          <div class="label">ERREICHT</div>
-          <div class="value">${percent(achieved)}</div>
-        </div>
-
-      </div>
-
-      <div class="bar">
-        <div class="fill" style="width:${clamp(achieved,0,100)}%"></div>
-      </div>
-
-    </div>
-
-    <div class="panel analysis-print">
-
-      <h2>Aktivitätswerte</h2>
-
-      <div class="grid grid3">
-
-        <div class="metric">
-          <div class="label">KUNDEN GEWONNEN</div>
-          <div class="value">${number(customerActual)}</div>
-        </div>
-
-        <div class="metric">
-          <div class="label">KONTAKTE / GESPRÄCHE</div>
-          <div class="value">${number(contactActual)}</div>
-        </div>
-
-        <div class="metric">
-          <div class="label">SERIERTERMINE</div>
-          <div class="value">${number(seriesActual)}</div>
-        </div>
-
-      </div>
-
-    </div>
-
-    ${renderMonthlyChart(area,months)}
-
-    <div class="panel analysis-print">
-
-      <h2>Besprechungsnotizen</h2>
-
-      <div class="notice">
-        ${getAnalysisNotes(area,month) || "Keine Notizen hinterlegt."}
-      </div>
-
-    </div>
-  `;
-}
-
-function renderSixMonthAnalysis(area,selectedMonth){
-
-  const months=sixMonths(selectedMonth);
-
-  const goal=
-    area==="all"
-      ? settings.totalGoal
-      : annualGoal(area);
-
-  const actual=analysisActual(area,months);
-
-  const missing=Math.max(goal-actual,0);
-  const achieved=goal ? actual/goal*100 : 0;
-
-  document.getElementById("analysisResult").innerHTML=`
-
-    <div class="panel analysis-print">
-
-      <div class="analysis-header">
-
-        <div>
-          <h2>6-Monats-Analyse – ${analysisName(area)}</h2>
-          <p style="color:var(--muted);margin:5px 0;">
-            ${monthLabel(months[0])} bis ${monthLabel(months[5])}
-          </p>
-        </div>
-
-        <span class="badge">6 Monate</span>
-
-      </div>
-
-      <div class="grid grid4" style="margin-top:16px;">
-
-        <div class="metric">
-          <div class="label">ZIEL</div>
-          <div class="value">${euro(goal)}</div>
-        </div>
-
-        <div class="metric">
-          <div class="label">IST</div>
-          <div class="value">${euro(actual)}</div>
-        </div>
-
-        <div class="metric">
-          <div class="label">FEHLT</div>
-          <div class="value">${euro(missing)}</div>
-        </div>
-
-        <div class="metric">
-          <div class="label">ERREICHT</div>
-          <div class="value">${percent(achieved)}</div>
-        </div>
-
-      </div>
-
-      <div class="bar">
-        <div class="fill" style="width:${clamp(achieved,0,100)}%"></div>
-      </div>
-
-    </div>
-
-    ${renderMonthlyChart(area,months)}
-
-    <div class="panel analysis-print">
-
-      <h2>Monatliche Übersicht</h2>
-
-      <div class="table-wrap">
-        <table>
-
-          <thead>
-            <tr>
-              <th>Monat</th>
-              <th>Soll</th>
-              <th>Ist</th>
-              <th>Fehlt</th>
-              <th>Erreicht</th>
-              <th>Kunden</th>
-              <th>Kontakte</th>
-              <th>Serientermine</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            ${months.map(month=>{
-
-              const mGoal=
-                area==="all"
-                  ? totalMonthlyGoal()
-                  : monthlyGoal(area);
-
-              const mActual=
-                analysisActual(area,[month]);
-
-              const mMissing=
-                Math.max(mGoal-mActual,0);
-
-              const mPercent=
-                mGoal ? mActual/mGoal*100 : 0;
-
-              const customers=
-                area==="all"
-                  ? Object.keys(AREAS).reduce(
-                      (sum,key)=>sum+areaCustomers(key,[month]),0)
-                  : areaCustomers(area,[month]);
-
-              const contacts=
-                area==="all"
-                  ? Object.keys(AREAS).reduce(
-                      (sum,key)=>sum+areaContacts(key,[month]),0)
-                  : areaContacts(area,[month]);
-
-              const series=
-                area==="all"
-                  ? Object.keys(AREAS).reduce(
-                      (sum,key)=>sum+areaSeries(key,[month]),0)
-                  : areaSeries(area,[month]);
-
-              return `
-                <tr>
-                  <td><strong>${monthLabel(month)}</strong></td>
-                  <td>${euro(mGoal)}</td>
-                  <td>${euro(mActual)}</td>
-                  <td>${euro(mMissing)}</td>
-                  <td>${percent(mPercent)}</td>
-                  <td>${number(customers)}</td>
-                  <td>${number(contacts)}</td>
-                  <td>${number(series)}</td>
-                </tr>
-              `;
-
-            }).join("")}
-
-          </tbody>
-
-        </table>
-      </div>
-
-    </div>
-  `;
-}
-
-function renderMonthlyChart(area,months){
-
-  const values=months.map(month=>{
-
-    const goal=
-      area==="all"
-        ? totalMonthlyGoal()
-        : monthlyGoal(area);
-
-    const actual=
-      analysisActual(area,[month]);
-
-    return {
-      month,
-      goal,
-      actual
-    };
-
+function addPosition(){
+
+  db.positions.push({
+    name:"Neue Position",
+    rate:0,
+    eigen:0,
+    team:0,
+    quality:0,
+    hold:0
   });
 
-  const max=Math.max(
-    ...values.flatMap(v=>[v.goal,v.actual]),
-    1
-  );
+  renderPositionTable();
 
-  return `
-    <div class="panel analysis-print">
-
-      <h2>Grafische Entwicklung</h2>
-
-      <div class="chart">
-
-        ${values.map(v=>{
-
-          const goalHeight=v.goal/max*100;
-          const actualHeight=v.actual/max*100;
-
-          return `
-            <div class="chart-col">
-
-              <div
-                class="chart-bar goal"
-                style="height:${Math.max(goalHeight,2)}%"
-                title="Ziel: ${euro(v.goal)}">
-              </div>
-
-              <div
-                class="chart-bar actual"
-                style="height:${Math.max(actualHeight,2)}%"
-                title="Ist: ${euro(v.actual)}">
-              </div>
-
-            </div>
-          `;
-
-        }).join("")}
-
-      </div>
-
-      <div class="chart-legend">
-        <span>
-          <span class="legend-box" style="background:#4b515c"></span>
-          Ziel
-        </span>
-
-        <span>
-          <span class="legend-box" style="background:var(--gold)"></span>
-          Ist
-        </span>
-      </div>
-
-      <div style="
-        display:flex;
-        gap:10px;
-        overflow-x:auto;
-        margin-top:10px;
-        color:var(--muted);
-        font-size:11px;
-      ">
-        ${months.map(m=>`
-          <div style="flex:1;text-align:center;min-width:70px;">
-            ${monthLabel(m)}
-          </div>
-        `).join("")}
-      </div>
-
-    </div>
-  `;
 }
 
-function getAnalysisNotes(area,month){
+function deletePosition(index){
 
-  if(area==="all"){
-    return Object.keys(AREAS)
-      .map(key=>{
-        const note=data[month]?.[key]?.notes||"";
-        if(!note) return "";
-        return `<strong>${AREAS[key].name}:</strong> ${escapeHtml(note)}`;
-      })
-      .filter(Boolean)
-      .join("<br><br>");
+  if(db.positions.length<=1) return;
+
+  db.positions.splice(index,1);
+
+  renderPositionTable();
+
+}
+
+function savePositions(){
+
+  saveDB();
+
+  renderPositionSelects();
+  renderPositionTable();
+
+  updateEverything();
+
+  alert("Positionen und Vergütungswerte gespeichert.");
+
+}
+
+function changeLogin(){
+
+  const user=document.getElementById("newUser").value.trim();
+  const pass=document.getElementById("newPass").value;
+
+  if(!user || !pass){
+
+    alert("Bitte neuen Benutzernamen und neues Passwort eingeben.");
+    return;
+
   }
 
-  return escapeHtml(
-    data[month]?.[area]?.notes||""
-  );
-}
+  db.login={user,pass};
 
-function escapeHtml(text){
+  saveDB();
 
-  return String(text)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
+  alert("Zugang wurde geändert.");
 
-function printAnalysis(){
+  document.getElementById("newUser").value="";
+  document.getElementById("newPass").value="";
 
-  if(!document.getElementById("analysisResult").innerHTML.trim()){
-    renderAnalysis();
-  }
-
-  setTimeout(()=>{
-    window.print();
-  },100);
 }
 
 /* =========================================================
-   BACKUP / RESET
+   EXPORT
 ========================================================= */
 
-function backupData(){
-
-  saveAll();
-
-  const payload={
-    settings,
-    data
-  };
+function exportData(){
 
   const blob=new Blob(
-    [JSON.stringify(payload,null,2)],
+    [JSON.stringify(db,null,2)],
     {type:"application/json"}
   );
 
   const url=URL.createObjectURL(blob);
 
   const a=document.createElement("a");
+
   a.href=url;
-  a.download=
-    "repraesentanzleiter-backup-"+
-    new Date().toISOString().slice(0,10)+
-    ".json";
+
+  a.download="repraesentanzleiter-cockpit-backup.json";
 
   a.click();
 
   URL.revokeObjectURL(url);
+
 }
 
-function resetData(){
+/* =========================================================
+   ALLES AKTUALISIEREN
+========================================================= */
 
-  if(!confirm(
-    "ACHTUNG: Alle gespeicherten Monatswerte werden gelöscht. Fortfahren?"
-  )){
-    return;
-  }
+function updateEverything(){
 
-  localStorage.removeItem("repraesentanzleiter_data");
+  ["eigen","zorn","biewer","deckers"].forEach(section=>{
+    updateSectionCards(section);
+  });
 
-  data={};
+  updateDashboard();
+  updateGesamt();
+  renderFehlt();
+  renderVerguetung();
+  renderCareer();
 
-  renderDashboard();
-
-  alert("Alle Monatsdaten wurden zurückgesetzt.");
 }
 
 /* =========================================================
    START
 ========================================================= */
 
-document.getElementById("analysisMonth").value=
-  settings.startMonth;
-
-renderDashboard();
-
-/*
-  Die Bereiche werden beim ersten Öffnen erzeugt.
-*/
+loadDB();
+initLogin();
 
 </script>
 
