@@ -546,6 +546,11 @@ footer{
         </div>
 
         <div>
+          <label>Monatsziel (€)</label>
+          <input type="number" id="dashMonthlyGoal" min="0" step="5000" oninput="updateMonthlyGoalLive(this.value)">
+        </div>
+
+        <div>
           <label>Meine Position</label>
           <select id="dashboardPosition" onchange="changeMyPosition(this.value)"></select>
         </div>
@@ -605,6 +610,19 @@ footer{
         <div class="value" id="dashEinbehalt">0 €</div>
       </div>
 
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+
+      <h3>Monatsziel</h3>
+      <div class="progressRow">
+        <div class="progressTop">
+          <span id="dashMonthlyGoalText">0 € von 0 €</span>
+          <strong id="dashMonthlyGoalPercent">0 %</strong>
+        </div>
+        <div class="bar"><div id="dashMonthlyGoalBar" class="fill"></div></div>
+      </div>
+      <div id="dashMonthlyGoalNotice" class="notice"></div>
     </div>
 
     <div class="panel" style="margin-top:16px">
@@ -1759,18 +1777,32 @@ function getMonthName(value){
 function getMonthData(month){
 
   if(!db.months[month]){
-
     db.months[month] = {
+      monthlyGoal:0,
       eigen:{umsatz:0,kunden:0,kontakte:0,termine:0,notizen:""},
       zorn:{umsatz:0,kunden:0,kontakte:0,termine:0,notizen:""},
       biewer:{umsatz:0,kunden:0,kontakte:0,termine:0,notizen:""},
       deckers:{umsatz:0,kunden:0,kontakte:0,termine:0,notizen:""}
     };
-
   }
 
+  if(typeof db.months[month].monthlyGoal!=="number") db.months[month].monthlyGoal=0;
   return db.months[month];
+}
 
+function getMonthTotal(data){
+  return ["eigen","zorn","biewer","deckers"].reduce((sum,key)=>sum+Number((data[key]||{}).umsatz||0),0);
+}
+
+function getAllMonthsTotal(){
+  return Object.keys(db.months||{}).reduce((sum,month)=>sum+getMonthTotal(getMonthData(month)),0);
+}
+
+function updateMonthlyGoalLive(value){
+  const month=document.getElementById("dashMonth").value || getCurrentMonth();
+  getMonthData(month).monthlyGoal=Number(value||0);
+  saveDB();
+  updateDashboard();
 }
 
 function getPosition(name){
@@ -1957,7 +1989,24 @@ function setGlobalMonth(month){
 
   if(!month) return;
 
+  // Aktuell sichtbare Eingaben vor dem Monatswechsel sichern.
+  ["eigen","zorn","biewer","deckers"].forEach(section=>{
+    const sectionMonth=document.getElementById(section+"Month");
+    if(!sectionMonth || !sectionMonth.value) return;
+    const d=getMonthData(sectionMonth.value)[section];
+    ["Umsatz","Kunden","Kontakte","Termine"].forEach(field=>{
+      const el=document.getElementById(section+field);
+      if(el) d[field.toLowerCase()]=Number(el.value||0);
+    });
+    const note=document.getElementById(section+"Notizen");
+    if(note) d.notizen=note.value||"";
+  });
+  saveDB();
+
   setAllMonths(month);
+
+  const goalInput=document.getElementById("dashMonthlyGoal");
+  if(goalInput) goalInput.value=getMonthData(month).monthlyGoal||"";
 
   updateEverything();
 
@@ -2155,52 +2204,53 @@ function updateDashboard(){
   const deckers=Number(data.deckers.umsatz);
 
   const team=zorn+biewer+deckers;
-  const total=eigen+team;
+  const monthTotal=eigen+team;
 
+  // Gesamtziel = Summe aller gespeicherten Monate.
   const goal=Number(db.settings.gesamtziel);
-  const progress=goal>0 ? total/goal*100 : 0;
+  const overallTotal=getAllMonthsTotal();
+  const progress=goal>0 ? overallTotal/goal*100 : 0;
+
+  // Monatsziel = nur der aktuell ausgewählte Monat.
+  const monthlyGoal=Number(data.monthlyGoal||0);
+  const monthlyProgress=monthlyGoal>0 ? monthTotal/monthlyGoal*100 : 0;
+  const monthlyMissing=Math.max(0,monthlyGoal-monthTotal);
+
+  const goalInput=document.getElementById("dashMonthlyGoal");
+  if(goalInput && document.activeElement!==goalInput) goalInput.value=monthlyGoal||"";
 
   const myPos=getPosition(db.myPosition);
-
   const myGross=eigen*myPos.rate/1000;
-
   const myHold=myGross*myPos.hold/100;
-
   const teamIncome=getTeamDifferenceIncome(month);
 
   document.getElementById("dashboardRate").value=myPos.rate+" ‰";
-
   document.getElementById("dashEigenUmsatz").textContent=euro(eigen);
   document.getElementById("dashTeamUmsatz").textContent=euro(team);
-  document.getElementById("dashGesamtUmsatz").textContent=euro(total);
-  document.getElementById("dashZiel").textContent=Math.round(progress)+" %";
+  document.getElementById("dashGesamtUmsatz").textContent=euro(monthTotal);
+  document.getElementById("dashZiel").textContent=monthlyGoal>0 ? Math.round(monthlyProgress)+" %" : "–";
 
   document.getElementById("dashMeinVerdienst").textContent=euro(myGross-myHold);
   document.getElementById("dashTeamVerdienst").textContent=euro(teamIncome.gross);
-  document.getElementById("dashGesamtVerdienst").textContent=euro(
-    (myGross-myHold)+teamIncome.net
-  );
+  document.getElementById("dashGesamtVerdienst").textContent=euro((myGross-myHold)+teamIncome.net);
+  document.getElementById("dashEinbehalt").textContent=euro(myHold+teamIncome.hold);
 
-  document.getElementById("dashEinbehalt").textContent=euro(
-    myHold+teamIncome.hold
-  );
+  document.getElementById("dashMonthlyGoalText").textContent=euro(monthTotal)+" von "+euro(monthlyGoal);
+  document.getElementById("dashMonthlyGoalPercent").textContent=monthlyGoal>0 ? Math.round(monthlyProgress)+" %" : "–";
+  document.getElementById("dashMonthlyGoalBar").style.width=monthlyGoal>0 ? Math.min(monthlyProgress,100)+"%" : "0%";
+  document.getElementById("dashMonthlyGoalNotice").innerHTML=
+    monthlyGoal<=0 ? "Trage für diesen Monat ein Monatsziel ein." :
+    monthlyMissing>0 ? "Bis zum Monatsziel fehlen aktuell <strong>"+euro(monthlyMissing)+"</strong>." :
+    "🎉 Das Monatsziel wurde erreicht.";
 
-  document.getElementById("dashGoalText").textContent=
-    euro(total)+" von "+euro(goal);
+  document.getElementById("dashGoalText").textContent=euro(overallTotal)+" von "+euro(goal);
+  document.getElementById("dashGoalPercent").textContent=Math.round(progress)+" %";
+  document.getElementById("dashGoalBar").style.width=Math.min(progress,100)+"%";
 
-  document.getElementById("dashGoalPercent").textContent=
-    Math.round(progress)+" %";
-
-  document.getElementById("dashGoalBar").style.width=
-    Math.min(progress,100)+"%";
-
-  const fehl=Math.max(0,goal-total);
-
+  const fehl=Math.max(0,goal-overallTotal);
   document.getElementById("dashNotice").innerHTML=
-    fehl>0
-      ? "Bis zum Gesamtziel fehlen aktuell <strong>"+euro(fehl)+"</strong>."
-      : "🎉 Das Gesamtziel wurde erreicht.";
-
+    fehl>0 ? "Bis zum Gesamtziel fehlen aktuell <strong>"+euro(fehl)+"</strong>." :
+    "🎉 Das Gesamtziel wurde erreicht.";
 }
 
 /* =========================================================
@@ -3252,12 +3302,14 @@ initLogin();
     const top3=(sorted[0].value+sorted[1].value+sorted[2].value)/total;
 
     const eigenValue=Number(data.eigen?.umsatz||0);
-    const teamTotal=areas
+    const eigenShare=eigenValue/total;
+    const teamTotal=sorted
       .filter(a=>a.key!=="eigen")
       .reduce((sum,a)=>sum+a.value,0);
     const teamShare=teamTotal/total;
 
-    const ok10070 = teamShare<=.70;
+    const pct=v=>(v*100).toFixed(1).replace(".",",")+" %";
+    const ok10070 = eigenShare<=1 && teamShare<=.70;
     const ok4070 = top1<=.40 && top2<=.70;
     const ok407090 = top1<=.40 && top2<=.70 && top3<=.90;
 
@@ -3265,24 +3317,27 @@ initLogin();
 
     let html='<ul class="umsatzList">';
     if(rule==="100/70"){
-      html+='<li>Eigenvolumen: maximal 100 % '+(true ? "✅" : "❌")+'</li>';
-      html+='<li>Alle Teambereiche zusammen: maximal 70 % '+(teamShare<=.70 ? "✅" : "❌")+'</li>';
+      html+='<li>ℹ️ <b>Eigenvolumen:</b> '+pct(eigenShare)+' – darf bis zu 100 % des Gesamtumsatzes ausmachen.</li>';
+      html+='<li>'+ (teamShare<=.70 ? "✅" : "❌") +' <b>Alle drei Teambereiche zusammen:</b> '+pct(teamShare)+' – maximal 70 %.</li>';
+      html+='<li>'+ (eigenShare>=.30 ? "✅" : "❌") +' <b>Eigenvolumen-Anteil:</b> '+pct(eigenShare)+' – mindestens 30 %, wenn die Teambereiche zusammen auf maximal 70 % begrenzt sind.</li>';
       html+='</ul>';
       html+=status(ok10070,
-        '100/70-Prüfung: Eigenvolumen kann bis zu 100 % ausmachen. Alle Teambereiche zusammen dürfen maximal 70 % ausmachen.');
+        '100/70-Prüfung: Eigenvolumen ist bis 100 % möglich; Team Zorn, Team Biewer und Team Deckers dürfen zusammen maximal 70 % ausmachen.');
     }else if(rule==="40/70"){
-      html+='<li>Ein Bereich: maximal 40 % '+(top1<=.40 ? "✅" : "❌")+'</li>';
-      html+='<li>Zwei Bereiche zusammen: maximal 70 % '+(top2<=.70 ? "✅" : "❌")+'</li>';
+      html+='<li>'+ (top1<=.40 ? "✅" : "❌") +' <b>Größter einzelner Bereich:</b> '+sorted[0].name+' mit '+pct(top1)+' – maximal 40 %.</li>';
+      html+='<li>'+ (top2<=.70 ? "✅" : "❌") +' <b>Zwei größte Bereiche zusammen:</b> '+pct(top2)+' – maximal 70 %.</li>';
+      html+='<li>ℹ️ <b>Restliche zwei Bereiche zusammen:</b> '+pct(1-top2)+' – mindestens 30 %.</li>';
       html+='</ul>';
       html+=status(ok4070,
-        '40/70-Prüfung: Die festgelegten Grenzen werden automatisch geprüft.');
+        '40/70-Prüfung: Kein einzelner Bereich darf über 40 % liegen; die zwei stärksten Bereiche dürfen zusammen maximal 70 % ausmachen.');
     }else{
-      html+='<li>Ein Bereich: maximal 40 % '+(top1<=.40 ? "✅" : "❌")+'</li>';
-      html+='<li>Zwei Bereiche zusammen: maximal 70 % '+(top2<=.70 ? "✅" : "❌")+'</li>';
-      html+='<li>Drei Bereiche zusammen: maximal 90 % '+(top3<=.90 ? "✅" : "❌")+'</li>';
+      html+='<li>'+ (top1<=.40 ? "✅" : "❌") +' <b>Größter einzelner Bereich:</b> '+sorted[0].name+' mit '+pct(top1)+' – maximal 40 %.</li>';
+      html+='<li>'+ (top2<=.70 ? "✅" : "❌") +' <b>Zwei größte Bereiche zusammen:</b> '+pct(top2)+' – maximal 70 %.</li>';
+      html+='<li>'+ (top3<=.90 ? "✅" : "❌") +' <b>Drei größte Bereiche zusammen:</b> '+pct(top3)+' – maximal 90 %.</li>';
+      html+='<li>'+ ((1-top3)>=.10 ? "✅" : "❌") +' <b>Verbleibender vierter Bereich:</b> '+pct(1-top3)+' – mindestens 10 %.</li>';
       html+='</ul>';
       html+=status(ok407090,
-        '40/70/90-Prüfung: Die festgelegten Grenzen werden automatisch geprüft.');
+        '40/70/90-Prüfung: 1 Bereich max. 40 %, 2 stärkste zusammen max. 70 %, 3 stärkste zusammen max. 90 % und der vierte Bereich mindestens 10 %.');
     }
     checks.innerHTML=html;
   };
