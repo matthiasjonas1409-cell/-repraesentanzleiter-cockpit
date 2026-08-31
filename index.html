@@ -2,825 +2,1339 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0d11">
 <title>Repräsentanzleiter Cockpit</title>
 <style>
-:root{--bg:#090c11;--panel:#171b22;--panel2:#101318;--line:#303641;--gold:#c9973e;--gold2:#f0c96b;--text:#f5f6f7;--muted:#a9afbb;--red:#ff8585;--green:#70e39a;--blue:#8ea8ff;--purple:#c49cff}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,input{font:inherit}button{cursor:pointer}.wrap{max-width:1400px;margin:auto;padding:16px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.brand small{color:var(--gold2);font-weight:800;letter-spacing:2px}.brand h1{margin:2px 0;font-size:28px}.brand p{margin:0;color:var(--muted)}
-.actions,.tabs{display:flex;gap:8px;flex-wrap:wrap}.btn,.tab{background:#252a33;color:#fff;border:1px solid #343b47;border-radius:10px;padding:11px 15px;font-weight:700}.tab.active,.btn.gold{background:var(--gold);color:#111;border-color:var(--gold)}
-.page{display:none}.page.active{display:block}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:14px}.panel h2{margin:0 0 14px}.hero{position:relative;overflow:hidden;border:1px solid #3a3f48;border-radius:14px;margin-top:14px;background:#000}.hero img{display:block;width:100%;height:auto}.liveBox{position:absolute;background:rgba(5,8,12,.88);border:1px solid rgba(201,151,62,.75);border-radius:10px;padding:9px 12px;text-align:center;min-width:145px;box-shadow:0 4px 20px #0008}.liveBox .label{font-size:11px;color:var(--gold2);font-weight:800;text-transform:uppercase}.liveBox .value{font-size:22px;font-weight:900;margin-top:2px}.heroOwn{left:61%;top:42%}.heroTotal{left:4%;top:14%}.heroTeam{left:74%;top:75%}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px}.metric span{display:block;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase}.metric strong{font-size:25px;display:block;margin-top:5px}.bar{height:9px;background:#292e37;border-radius:20px;overflow:hidden;margin-top:9px}.fill{height:100%;background:var(--gold);width:0;transition:.25s}.green{color:var(--green)!important}.red{color:var(--red)!important}.blue{color:var(--blue)!important}.purple{color:var(--purple)!important}
-table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #30343d;font-size:13px}th{color:var(--muted)}.status{font-weight:900}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field label{display:block;color:var(--muted);font-size:12px;font-weight:800;margin-bottom:7px}.field input{width:100%;background:#0e1014;color:#fff;border:1px solid #3b4350;border-radius:9px;padding:12px}.notice{padding:12px;border-left:3px solid var(--gold);background:#12151a;border-radius:8px;color:#ddd;margin-top:12px}.teamCard{border-top:4px solid var(--gold)}.teamCard.zorn{border-color:#8ea8ff}.teamCard.biewer{border-color:#70e39a}.teamCard.deckers{border-color:#c49cff}
-.small{color:var(--muted);font-size:13px}.login{min-height:100vh;display:grid;place-items:center;padding:20px}.loginbox{width:min(430px,100%);background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px}.loginbox h1{margin-top:0}.loginbox input{width:100%;margin:7px 0 12px;background:#0e1014;color:#fff;border:1px solid #3b4350;border-radius:9px;padding:12px}.loginbox button{width:100%;background:var(--gold);border:0;border-radius:9px;padding:12px;font-weight:900}.error{color:var(--red);margin-top:8px}
-@media(max-width:900px){.grid,.grid3{grid-template-columns:1fr 1fr}.heroOwn{left:58%;top:39%}.heroTeam{left:68%;top:73%}}
-@media(max-width:650px){.wrap{padding:10px}.top{align-items:flex-start;flex-direction:column}.grid,.grid3,.formgrid{grid-template-columns:1fr}.hero{display:none}.brand h1{font-size:24px}.tabs{overflow:auto;flex-wrap:nowrap}.tab{white-space:nowrap}.metric strong{font-size:22px}}
+:root{--bg:#090b0f;--panel:#171b22;--panel2:#101318;--line:#303641;--gold:#c9973e;--gold2:#f0c96b;--text:#f5f6f7;--muted:#a9afbb;--red:#ff7f7f;--green:#70e09a;--blue:#78aefc}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit} button{cursor:pointer}
+.wrap{max-width:1400px;margin:auto;padding:16px}.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-end}.eyebrow{color:var(--gold2);font-weight:800;letter-spacing:3px}.title{font-size:32px;font-weight:900;margin:4px 0}.sub{color:var(--muted)}
+.actions{display:flex;gap:8px}.btn{border:1px solid var(--line);background:#252a33;color:#fff;border-radius:10px;padding:12px 16px;font-weight:750}.btn.gold{background:var(--gold);color:#111;border-color:var(--gold)}.btn.danger{color:#fff}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.nav button.active{background:var(--gold);color:#111}
+.page{display:none}.page.active{display:block}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}.panel h2{margin:0 0 14px}
+.hero{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#050608;margin-bottom:16px}.hero img{width:100%;display:block;max-height:500px;object-fit:cover}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:15px}.card small{color:var(--muted);display:block;margin-bottom:5px}.big{font-size:25px;font-weight:900}.gold{color:var(--gold2)}.red{color:var(--red)}.green{color:var(--green)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+label{display:block;color:var(--muted);font-size:13px;font-weight:750;margin-bottom:6px}input,select{width:100%;background:#0d0f14;border:1px solid var(--line);color:#fff;border-radius:9px;padding:12px}
+.field{margin-bottom:12px}.section-title{font-size:18px;font-weight:850;margin:4px 0 12px}.hint{color:var(--muted);font-size:13px}
+table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--muted);font-size:12px}
+.status{font-weight:850}.bar{height:10px;background:#292e37;border-radius:20px;overflow:hidden}.fill{height:100%;background:var(--gold);width:0}
+.split{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.split .card{border-top:3px solid var(--gold)}
+.notice{padding:12px;border-left:3px solid var(--gold);background:#101318;border-radius:8px;color:#dfe2e7}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}.loginbox{width:min(430px,100%);background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}.loginbox h1{margin-top:0}
+.toast{position:fixed;right:18px;bottom:18px;background:#151922;border:1px solid var(--line);padding:12px 16px;border-radius:10px;display:none}
+@media(max-width:900px){.cards,.grid4,.split{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+@media(max-width:600px){.cards,.grid4,.split{grid-template-columns:1fr}.wrap{padding:10px}.title{font-size:27px}.nav button{flex:1}.hero img{max-height:none}}
 </style>
 </head>
 <body>
 
 <div id="login" class="login">
-<div class="loginbox">
-<div class="small">PERSÖNLICHES COCKPIT</div>
-<h1>REPRÄSENTANZLEITER</h1>
-<p class="small">Bitte anmelden, um dein Ziel-Cockpit zu öffnen.</p>
-<label class="small">Benutzername</label>
-<input id="loginUser" autocomplete="username">
-<label class="small">Passwort</label>
-<input id="loginPass" type="password" autocomplete="current-password">
-<button onclick="login()">Einloggen</button>
-<div id="loginErr" class="error"></div>
-<div class="notice">Die Daten werden auf diesem Gerät gespeichert. Über „Daten sichern“ kannst du eine Sicherung exportieren.</div>
-</div>
+  <div class="loginbox">
+    <div class="eyebrow">PERSÖNLICHES COCKPIT</div>
+    <h1>REPRÄSENTANZLEITER</h1>
+    <p class="sub">Bitte anmelden, um dein Ziel-Cockpit zu öffnen.</p>
+
+    <div class="field">
+      <label>Benutzername</label>
+      <input id="loginUser" autocomplete="username">
+    </div>
+
+    <div class="field">
+      <label>Passwort</label>
+      <input id="loginPass" type="password" autocomplete="current-password">
+    </div>
+
+    <button class="btn gold" style="width:100%" onclick="login()">Einloggen</button>
+    <p id="loginErr" class="red"></p>
+  </div>
 </div>
 
 <div id="app" style="display:none">
 <div class="wrap">
 
-<div class="top">
-<div class="brand">
-<small>AB HEUTE</small>
-<h1>REPRÄSENTANZLEITER</h1>
-<p>Ziel-, Monats- und Führungs-Cockpit</p>
-</div>
-<div class="actions">
-<button class="btn" onclick="exportData()">Daten sichern</button>
-<button class="btn" onclick="logout()">Abmelden</button>
-</div>
-</div>
+  <div class="top">
+    <div>
+      <div class="eyebrow">AB HEUTE</div>
+      <div class="title">REPRÄSENTANZLEITER</div>
+      <div class="sub">Ziel-, Monats- und Führungs-Cockpit</div>
+    </div>
 
-<div class="tabs">
-<button class="tab active" data-page="dashboard">Dashboard</button>
-<button class="tab" data-page="monat">Monat</button>
-<button class="tab" data-page="fehlt">Was fehlt?</button>
-<button class="tab" data-page="verlauf">Verlauf</button>
-<button class="tab" data-page="einstellungen">Einstellungen</button>
-<button class="tab" data-page="anleitung">Anleitung</button>
-</div>
+    <div class="actions">
+      <button class="btn" onclick="exportData()">Daten sichern</button>
+      <button class="btn" onclick="logout()">Abmelden</button>
+    </div>
+  </div>
 
-<section id="dashboard" class="page active">
+  <nav class="nav">
+    <button class="btn active" data-page="dashboard">Dashboard</button>
+    <button class="btn" data-page="own">Eigenvolumen</button>
+    <button class="btn" data-page="zorn">Team Zorn</button>
+    <button class="btn" data-page="biewer">Team Biewer</button>
+    <button class="btn" data-page="deckers">Team Deckers</button>
+    <button class="btn" data-page="gesamt">Gesamtübersicht</button>
+    <button class="btn" data-page="missing">Was fehlt?</button>
+    <button class="btn" data-page="history">Verlauf</button>
+    <button class="btn" data-page="settings">Einstellungen</button>
+    <button class="btn" data-page="guide">Anleitung</button>
+  </nav>
 
-<div class="hero">
-<img src="repaesentanzleiter-titelbild.jpg" alt="Repräsentanzleiter Motivation">
-
-<div class="liveBox heroTotal">
-<div class="label">Gesamtziel</div>
-<div class="value" id="heroTotal">0 €</div>
-</div>
-
-<div class="liveBox heroOwn">
-<div class="label">Dein Ist-Umsatz</div>
-<div class="value" id="heroOwn">0 €</div>
-</div>
-
-<div class="liveBox heroTeam">
-<div class="label">Team Ist-Umsatz</div>
-<div class="value" id="heroTeam">0 €</div>
-</div>
-</div>
-
-<div class="grid" style="margin-top:14px">
-
-<div class="metric">
-<span>Gesamtziel</span>
-<strong id="mTotal">0 €</strong>
-</div>
-
-<div class="metric">
-<span>Dein Ziel</span>
-<strong id="mOwnTarget">0 €</strong>
-</div>
-
-<div class="metric">
-<span>Team-Ziel</span>
-<strong id="mTeamTarget">0 €</strong>
-</div>
-
-<div class="metric">
-<span>Gesamt-Kunden</span>
-<strong id="mCustomers">0</strong>
-</div>
-
-</div>
-
-<div class="panel">
-<h2>Aktueller Stand</h2>
-
-<div class="grid3">
-
-<div class="metric">
-<span>Eigener Umsatz</span>
-<strong id="dOwn">0 €</strong>
-<div class="bar"><div class="fill" id="bOwn"></div></div>
-</div>
-
-<div class="metric">
-<span>Teamumsatz</span>
-<strong id="dTeam">0 €</strong>
-<div class="bar"><div class="fill" id="bTeam"></div></div>
-</div>
-
-<div class="metric">
-<span>Gesamtumsatz</span>
-<strong id="dTotal">0 €</strong>
-<div class="bar"><div class="fill" id="bTotal"></div></div>
-</div>
+  <section id="dashboard" class="page active"></section>
+  <section id="own" class="page"></section>
+  <section id="zorn" class="page"></section>
+  <section id="biewer" class="page"></section>
+  <section id="deckers" class="page"></section>
+  <section id="gesamt" class="page"></section>
+  <section id="missing" class="page"></section>
+  <section id="history" class="page"></section>
+  <section id="settings" class="page"></section>
+  <section id="guide" class="page"></section>
 
 </div>
 </div>
 
-<div class="panel">
-<h2>Umsatzziele & Verteilung 40 / 30 / 15 / 15</h2>
-
-<div class="grid">
-
-<div class="metric teamCard zorn">
-<span>Team Zorn · 40%</span>
-<strong id="tZorn">0 €</strong>
-<div class="small">Zielanteil</div>
-</div>
-
-<div class="metric teamCard">
-<span>Ich (Matthias) · 30%</span>
-<strong id="tMatthias">0 €</strong>
-<div class="small">Dein Zielanteil</div>
-</div>
-
-<div class="metric teamCard biewer">
-<span>Team Biewer · 15%</span>
-<strong id="tBiewer">0 €</strong>
-<div class="small">Zielanteil</div>
-</div>
-
-<div class="metric teamCard deckers">
-<span>Team Deckers · 15%</span>
-<strong id="tDeckers">0 €</strong>
-<div class="small">Zielanteil</div>
-</div>
-
-</div>
-</div>
-
-<div class="panel">
-<h2>Team-/Personenübersicht</h2>
-
-<table>
-<thead>
-<tr>
-<th>Bereich</th>
-<th>Ziel</th>
-<th>Ist</th>
-<th>Fehlt</th>
-<th>Erreicht</th>
-<th>Status</th>
-</tr>
-</thead>
-
-<tbody id="targetTable"></tbody>
-</table>
-</div>
-
-<div class="panel">
-<h2>Rechenweg & Aktivitätsziel</h2>
-<div class="notice" id="calcText"></div>
-</div>
-
-</section>
-
-<section id="monat" class="page">
-
-<div class="panel">
-<h2>Monatliche Ist-Werte</h2>
-
-<div class="formgrid">
-
-<div class="field">
-<label>Monat</label>
-<input id="month" type="month">
-</div>
-
-<div class="field">
-<label>Eigener Umsatz (€)</label>
-<input id="own" type="number" min="0">
-</div>
-
-<div class="field">
-<label>Eigene Kunden gewonnen</label>
-<input id="ownCustomers" type="number" min="0">
-</div>
-
-<div class="field">
-<label>Kontakte / gesehen</label>
-<input id="contacts" type="number" min="0">
-</div>
-
-<div class="field">
-<label>Team-Umsatz gesamt (€)</label>
-<input id="team" type="number" min="0">
-</div>
-
-<div class="field">
-<label>Team-Kunden gewonnen</label>
-<input id="teamCustomers" type="number" min="0">
-</div>
-
-<div class="field">
-<label>Serientermine</label>
-<input id="series" type="number" min="0">
-</div>
-
-</div>
-
-<br>
-
-<button class="btn gold" onclick="saveMonth()">Monat speichern</button>
-
-<div id="saveMsg" class="notice" style="display:none"></div>
-
-</div>
-</section>
-
-<section id="fehlt" class="page">
-
-<div class="panel">
-<h2>Was fehlt noch?</h2>
-
-<div class="grid3" id="missingCards"></div>
-
-<div class="notice" id="missingText"></div>
-</div>
-
-</section>
-
-<section id="verlauf" class="page">
-
-<div class="panel">
-<h2>Monatsverlauf</h2>
-<p class="small">Jeder gespeicherte Monat bleibt erhalten.</p>
-<div id="history"></div>
-</div>
-
-</section>
-
-<section id="einstellungen" class="page">
-
-<div class="panel">
-<h2>Ziele & Annahmen ändern</h2>
-
-<div class="formgrid">
-
-<div class="field">
-<label>Gesamtziel (€)</label>
-<input id="sTotal" type="number">
-</div>
-
-<div class="field">
-<label>Dein Ziel (€) – 30%</label>
-<input id="sOwnTarget" type="number">
-</div>
-
-<div class="field">
-<label>Umsatz pro Kunde (€)</label>
-<input id="sPerCustomer" type="number">
-</div>
-
-<div class="field">
-<label>Abschlussquote (%)</label>
-<input id="sClose" type="number">
-</div>
-
-<div class="field">
-<label>Mindestkontakte bis Dezember</label>
-<input id="sMinContacts" type="number">
-</div>
-
-<div class="field">
-<label>Vertriebspartner pro Serientermin</label>
-<input id="sPartners" type="number">
-</div>
-
-</div>
-
-<br>
-
-<button class="btn gold" onclick="saveSettings()">Einstellungen speichern</button>
-
-<div class="notice">
-Automatische Verteilung: Team Zorn 40%, du 30%, Team Biewer 15%, Team Deckers 15%.
-</div>
-
-</div>
-
-<div class="panel">
-<h2>Daten laden</h2>
-<input id="importFile" type="file" accept=".json" onchange="importData(event)">
-</div>
-
-</section>
-
-<section id="anleitung" class="page">
-
-<div class="panel">
-
-<h2>📘 Anleitung</h2>
-
-<p>1. Unter <b>Monat</b> den Monat auswählen.</p>
-
-<p>2. Deine aktuellen Werte eintragen.</p>
-
-<p>3. <b>Monat speichern</b> klicken.</p>
-
-<p>4. Dashboard, „Was fehlt?“ und Verlauf aktualisieren sich automatisch.</p>
-
-<p>5. Zielverteilung: <b>40% Team Zorn · 30% Matthias · 15% Team Biewer · 15% Team Deckers.</b></p>
-
-<p>6. „Daten sichern“ erstellt eine Backup-Datei.</p>
-
-<div class="notice">
-Für eine echte Synchronisation zwischen mehreren Geräten müssten wir später noch eine Cloud-Datenbank anbinden.
-</div>
-
-</div>
-</section>
-
-</div>
-</div>
+<div id="toast" class="toast"></div>
 
 <script>
 
-const KEY="repraesentanzleiter_v4";
+const KEY="repraes2026_v3";
 
-const defaults={
-settings:{
-total:3500000,
-ownTarget:1050000,
-perCustomer:50000,
-close:50,
-minContacts:32,
-partners:2
-},
-months:{}
+const defaultState={
+  settings:{
+    gesamt:3500000,
+    own:1050000,
+    customer:50000,
+    close:50,
+    contacts:32,
+    partners:2
+  },
+  months:{},
+  credentials:{
+    user:"matthias",
+    pass:"1409"
+  }
 };
 
-let state=loadState();
+const areas={
+  own:{
+    name:"Eigenvolumen",
+    short:"Ich / Matthias",
+    pct:.30,
+    targetKey:"own"
+  },
 
-function loadState(){
-try{
-return JSON.parse(localStorage.getItem(KEY))||structuredClone(defaults)
-}
-catch(e){
-return structuredClone(defaults)
-}
+  zorn:{
+    name:"Team Zorn",
+    short:"Team Zorn",
+    pct:.40,
+    targetFixed:1400000
+  },
+
+  biewer:{
+    name:"Team Biewer",
+    short:"Team Biewer",
+    pct:.15,
+    targetFixed:525000
+  },
+
+  deckers:{
+    name:"Team Deckers",
+    short:"Team Deckers",
+    pct:.15,
+    targetFixed:525000
+  }
+};
+
+let state=load();
+
+function load(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(KEY)||"{}");
+
+    return Object.assign(
+      {},
+      defaultState,
+      saved,
+      {
+        settings:Object.assign(
+          {},
+          defaultState.settings,
+          saved.settings||{}
+        ),
+        months:saved.months||{}
+      }
+    );
+
+  }catch(e){
+    return structuredClone(defaultState);
+  }
 }
 
-function persist(){
-localStorage.setItem(KEY,JSON.stringify(state))
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(state));
+  toast("Gespeichert ✓");
 }
 
-function euro(n){
-return new Intl.NumberFormat("de-DE",{
-style:"currency",
-currency:"EUR",
-maximumFractionDigits:0
-}).format(Number(n)||0)
+function toast(t){
+  const x=document.getElementById("toast");
+  x.textContent=t;
+  x.style.display="block";
+
+  setTimeout(()=>{
+    x.style.display="none";
+  },1800);
 }
 
-function pct(n){
-return (Number(n)||0).toLocaleString("de-DE",{
-maximumFractionDigits:1
-})+" %"
+function monthKey(){
+  return new Date().toISOString().slice(0,7);
 }
 
 function monthLabel(k){
-const [y,m]=k.split("-");
-return new Date(+y,+m-1,1).toLocaleDateString("de-DE",{
-month:"long",
-year:"numeric"
-})
+  const [y,m]=k.split("-");
+
+  return new Date(
+    Number(y),
+    Number(m)-1,
+    1
+  ).toLocaleDateString(
+    "de-DE",
+    {
+      month:"long",
+      year:"numeric"
+    }
+  );
 }
 
-function latest(){
-const ks=Object.keys(state.months).sort();
-return state.months[ks[ks.length-1]]||{
-own:0,
-ownCustomers:0,
-contacts:0,
-team:0,
-teamCustomers:0,
-series:0
-}
+function getMonth(k){
+
+  if(!state.months[k]){
+    state.months[k]={
+      own:{},
+      zorn:{},
+      biewer:{},
+      deckers:{}
+    };
+  }
+
+  return state.months[k];
 }
 
-function targets(){
-const s=state.settings;
-
-return{
-total:s.total,
-own:s.ownTarget,
-zorn:s.total*.4,
-biewer:s.total*.15,
-deckers:s.total*.15,
-team:s.total-s.ownTarget
+function num(id){
+  return Number(
+    document.getElementById(id)?.value||0
+  );
 }
+
+function money(n){
+  return new Intl.NumberFormat(
+    "de-DE",
+    {
+      style:"currency",
+      currency:"EUR",
+      maximumFractionDigits:0
+    }
+  ).format(n||0);
+}
+
+function pct(n){
+  return (
+    (n||0).toLocaleString(
+      "de-DE",
+      {
+        maximumFractionDigits:1
+      }
+    )+"%"
+  );
+}
+
+function target(a){
+  return a.targetFixed ??
+    (state.settings.gesamt*a.pct);
+}
+
+function monthArea(k,a){
+
+  return Object.assign(
+    {
+      revenue:0,
+      customers:0,
+      contacts:0,
+      appointments:0
+    },
+    getMonth(k)[a]||{}
+  );
 }
 
 function login(){
 
-const u=document.getElementById("loginUser").value.trim();
+  const u=document.getElementById("loginUser").value;
+  const p=document.getElementById("loginPass").value;
 
-const p=document.getElementById("loginPass").value;
+  if(
+    u===state.credentials.user &&
+    p===state.credentials.pass
+  ){
 
-if((u==="Matthias"||u==="matthias")&&p==="1234"){
+    sessionStorage.setItem(
+      "repraes_login",
+      "1"
+    );
 
-sessionStorage.ok="1";
+    showApp();
 
-showApp();
+  }else{
 
+    document.getElementById(
+      "loginErr"
+    ).textContent=
+      "Benutzername oder Passwort falsch.";
+  }
 }
-else{
 
-document.getElementById("loginErr").textContent="Benutzername oder Passwort falsch.";
+function logout(){
+  sessionStorage.removeItem(
+    "repraes_login"
+  );
 
-}
+  location.reload();
 }
 
 function showApp(){
 
-document.getElementById("login").style.display="none";
+  document.getElementById(
+    "login"
+  ).style.display="none";
 
-document.getElementById("app").style.display="block";
+  document.getElementById(
+    "app"
+  ).style.display="block";
 
-renderAll();
-
+  renderAll();
 }
 
-function logout(){
-
-sessionStorage.removeItem("ok");
-
-location.reload();
-
+if(
+  sessionStorage.getItem(
+    "repraes_login"
+  )==="1"
+){
+  showApp();
 }
 
-if(sessionStorage.ok==="1")showApp();
+document.querySelectorAll(
+  "[data-page]"
+).forEach(b=>{
 
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+  b.onclick=()=>{
 
-document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll(
+      ".page"
+    ).forEach(
+      p=>p.classList.remove("active")
+    );
 
-b.classList.add("active");
+    document.querySelectorAll(
+      "[data-page]"
+    ).forEach(
+      x=>x.classList.remove("active")
+    );
 
-document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+    document.getElementById(
+      b.dataset.page
+    ).classList.add("active");
 
-document.getElementById(b.dataset.page).classList.add("active");
-
-renderAll();
+    b.classList.add("active");
+  };
 
 });
 
-function saveMonth(){
+function renderArea(id){
 
-const k=document.getElementById("month").value;
+  const a=areas[id];
+  const k=monthKey();
+  const d=monthArea(k,id);
+  const t=target(a);
+  const r=d.revenue;
+  const c=d.customers;
 
-state.months[k]={
+  document.getElementById(id).innerHTML=`
 
-own:+own.value||0,
+  <div class="panel">
 
-ownCustomers:+ownCustomers.value||0,
+    <h2>${a.name}</h2>
 
-contacts:+contacts.value||0,
+    <div class="hint">
+      Monat: ${monthLabel(k)}
+      · Zielanteil ${(a.pct*100).toFixed(0)}%
+      · Jahresziel ${money(t)}
+    </div>
 
-team:+team.value||0,
+  </div>
 
-teamCustomers:+teamCustomers.value||0,
+  <div class="grid2">
 
-series:+series.value||0
+    <div class="panel">
 
-};
+      <div class="section-title">
+        Umsatz & Kunden
+      </div>
 
-persist();
+      <div class="field">
+        <label>Umsatz (€)</label>
+        <input
+          id="${id}Revenue"
+          type="number"
+          value="${r}"
+        >
+      </div>
 
-saveMsg.style.display="block";
+      <div class="field">
+        <label>Gewonnene Kunden</label>
+        <input
+          id="${id}Customers"
+          type="number"
+          value="${c}"
+        >
+      </div>
 
-saveMsg.textContent=monthLabel(k)+" gespeichert.";
+    </div>
 
-renderAll();
+    <div class="panel">
 
+      <div class="section-title">
+        Aktivität
+      </div>
+
+      <div class="field">
+        <label>Kontakte / Gespräche</label>
+        <input
+          id="${id}Contacts"
+          type="number"
+          value="${d.contacts||0}"
+        >
+      </div>
+
+      <div class="field">
+        <label>Serientermine</label>
+        <input
+          id="${id}Appointments"
+          type="number"
+          value="${d.appointments||0}"
+        >
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="panel">
+
+    <button
+      class="btn gold"
+      onclick="saveArea('${id}')"
+    >
+      ${a.name}
+      für ${monthLabel(k)}
+      speichern
+    </button>
+
+  </div>
+
+  <div class="panel">
+
+    <h2>Jahresstand</h2>
+
+    <div class="cards">
+
+      <div class="card">
+        <small>ZIEL</small>
+        <div class="big">
+          ${money(t)}
+        </div>
+      </div>
+
+      <div class="card">
+        <small>IST</small>
+        <div class="big">
+          ${money(r)}
+        </div>
+      </div>
+
+      <div class="card">
+
+        <small>FEHLT</small>
+
+        <div
+          class="big ${
+            t-r<=0
+              ?"green"
+              :"red"
+          }"
+        >
+          ${money(Math.max(0,t-r))}
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <small>ERREICHT</small>
+
+        <div class="big">
+          ${pct(
+            Math.min(
+              100,
+              r/t*100
+            )
+          )}
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  `;
 }
 
-function loadMonthForm(){
+function saveArea(id){
 
-const k=document.getElementById("month").value;
+  const k=monthKey();
+  const m=getMonth(k);
 
-const d=state.months[k]||{};
+  m[id]={
+    revenue:num(id+"Revenue"),
+    customers:num(id+"Customers"),
+    contacts:num(id+"Contacts"),
+    appointments:num(id+"Appointments")
+  };
 
-["own","ownCustomers","contacts","team","teamCustomers","series"].forEach(id=>{
-
-document.getElementById(id).value=d[id]??0
-
-});
-
-}
-
-function saveSettings(){
-
-state.settings.total=+sTotal.value||3500000;
-
-state.settings.ownTarget=+sOwnTarget.value||1050000;
-
-state.settings.perCustomer=+sPerCustomer.value||50000;
-
-state.settings.close=+sClose.value||50;
-
-state.settings.minContacts=+sMinContacts.value||32;
-
-state.settings.partners=+sPartners.value||2;
-
-persist();
-
-renderAll();
-
-}
-
-function renderSettings(){
-
-const s=state.settings;
-
-sTotal.value=s.total;
-
-sOwnTarget.value=s.ownTarget;
-
-sPerCustomer.value=s.perCustomer;
-
-sClose.value=s.close;
-
-sMinContacts.value=s.minContacts;
-
-sPartners.value=s.partners;
-
+  save();
+  renderAll();
 }
 
 function renderDashboard(){
 
-const t=targets();
+  const k=monthKey();
 
-const d=latest();
+  const own=monthArea(k,"own");
+  const z=monthArea(k,"zorn");
+  const b=monthArea(k,"biewer");
+  const d=monthArea(k,"deckers");
 
-const total=d.own+d.team;
+  const total=
+    own.revenue+
+    z.revenue+
+    b.revenue+
+    d.revenue;
 
-heroTotal.textContent=euro(t.total);
+  document.getElementById(
+    "dashboard"
+  ).innerHTML=`
 
-heroOwn.textContent=euro(d.own);
+  <div class="hero">
 
-heroTeam.textContent=euro(d.team);
+    <img
+      src="repaesentanzleiter-titelbild.jpg"
+      alt="Repräsentanzleiter Motivation"
+      onerror="this.style.display='none'"
+    >
 
-mTotal.textContent=euro(t.total);
+  </div>
 
-mOwnTarget.textContent=euro(t.own);
+  <div class="panel">
 
-mTeamTarget.textContent=euro(t.team);
+    <h2>
+      Aktueller Monatsstand
+      · ${monthLabel(k)}
+    </h2>
 
-mCustomers.textContent=d.ownCustomers+d.teamCustomers;
+    <div class="cards">
 
-dOwn.textContent=euro(d.own);
+      <div class="card">
+        <small>GESAMTZIEL</small>
+        <div class="big gold">
+          ${money(state.settings.gesamt)}
+        </div>
+      </div>
 
-dTeam.textContent=euro(d.team);
+      <div class="card">
+        <small>EIGENVOLUMEN</small>
+        <div class="big">
+          ${money(own.revenue)}
+        </div>
+      </div>
 
-dTotal.textContent=euro(total);
+      <div class="card">
+        <small>TEAMUMSATZ</small>
+        <div class="big">
+          ${money(
+            z.revenue+
+            b.revenue+
+            d.revenue
+          )}
+        </div>
+      </div>
 
-bOwn.style.width=Math.min(100,d.own/t.own*100)+"%";
+      <div class="card">
+        <small>GESAMTUMSATZ</small>
+        <div class="big">
+          ${money(total)}
+        </div>
+      </div>
 
-bTeam.style.width=Math.min(100,d.team/t.team*100)+"%";
+    </div>
 
-bTotal.style.width=Math.min(100,total/t.total*100)+"%";
+  </div>
 
-tZorn.textContent=euro(t.zorn);
+  <div class="panel">
 
-tMatthias.textContent=euro(t.own);
+    <h2>
+      40 / 30 / 15 / 15 Aufteilung
+    </h2>
 
-tBiewer.textContent=euro(t.biewer);
+    <div class="split">
 
-tDeckers.textContent=euro(t.deckers);
+      ${splitCard(
+        "Team Zorn",
+        z.revenue,
+        1400000,
+        .40
+      )}
 
-const rows=[
+      ${splitCard(
+        "Ich / Matthias",
+        own.revenue,
+        state.settings.own,
+        .30
+      )}
 
-["Team Zorn (40%)",t.zorn,d.team*.4],
+      ${splitCard(
+        "Team Biewer",
+        b.revenue,
+        525000,
+        .15
+      )}
 
-["Ich (Matthias) (30%)",t.own,d.own],
+      ${splitCard(
+        "Team Deckers",
+        d.revenue,
+        525000,
+        .15
+      )}
 
-["Team Biewer (15%)",t.biewer,d.team*.3],
+    </div>
 
-["Team Deckers (15%)",t.deckers,d.team*.3]
+  </div>
 
-];
+  `;
+}
 
-targetTable.innerHTML=rows.map(r=>{
+function splitCard(n,ist,t,p){
 
-const a=r[1]?r[2]/r[1]*100:0;
+  return `
 
-return `<tr>
-<td>${r[0]}</td>
-<td>${euro(r[1])}</td>
-<td>${euro(r[2])}</td>
-<td>${euro(Math.max(0,r[1]-r[2]))}</td>
-<td>${pct(a)}</td>
-<td class="status ${a>=100?"green":"red"}">${a>=100?"ERREICHT":"OFFEN"}</td>
-</tr>`
+  <div class="card">
 
-}).join("");
+    <small>
+      ${n}
+      · ${(p*100).toFixed(0)}%
+    </small>
 
-const needed=Math.ceil(t.own/state.settings.perCustomer);
+    <div class="big">
+      ${money(ist)}
+    </div>
 
-const contacts=Math.ceil(needed/(state.settings.close/100));
+    <div class="hint">
+      Jahresziel ${money(t)}
+    </div>
 
-calcText.innerHTML=`Dein Ziel: <b>${euro(t.own)}</b> → ca. <b>${needed} eigene Kunden</b>. Bei ${state.settings.close}% Abschlussquote sind das ca. <b>${contacts} Kontakte/Gespräche</b>.`;
+    <div class="bar">
 
+      <div
+        class="fill"
+        style="
+          width:${Math.min(
+            100,
+            ist/t*100
+          )}%
+        "
+      ></div>
+
+    </div>
+
+    <div class="hint">
+      ${pct(
+        Math.min(
+          100,
+          ist/t*100
+        )
+      )}
+      erreicht
+    </div>
+
+  </div>
+
+  `;
+}
+
+function renderGesamt(){
+
+  const k=monthKey();
+
+  let rows="";
+  let total=0;
+
+  for(
+    const [id,a]
+    of Object.entries(areas)
+  ){
+
+    const d=monthArea(k,id);
+    const t=target(a);
+
+    total+=d.revenue;
+
+    rows+=`
+
+    <tr>
+
+      <td>
+        ${a.name}
+      </td>
+
+      <td>
+        ${money(t)}
+      </td>
+
+      <td>
+        ${money(d.revenue)}
+      </td>
+
+      <td>
+        ${money(
+          Math.max(
+            0,
+            t-d.revenue
+          )
+        )}
+      </td>
+
+      <td>
+        ${pct(
+          Math.min(
+            100,
+            d.revenue/t*100
+          )
+        )}
+      </td>
+
+    </tr>
+
+    `;
+  }
+
+  document.getElementById(
+    "gesamt"
+  ).innerHTML=`
+
+  <div class="panel">
+
+    <h2>
+      Gesamtübersicht
+      · ${monthLabel(k)}
+    </h2>
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>Bereich</th>
+          <th>Jahresziel</th>
+          <th>Ist</th>
+          <th>Fehlt</th>
+          <th>Erreicht</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        ${rows}
+
+        <tr>
+
+          <th>Gesamt</th>
+
+          <th>
+            ${money(
+              state.settings.gesamt
+            )}
+          </th>
+
+          <th>
+            ${money(total)}
+          </th>
+
+          <th>
+            ${money(
+              Math.max(
+                0,
+                state.settings.gesamt-total
+              )
+            )}
+          </th>
+
+          <th>
+            ${pct(
+              Math.min(
+                100,
+                total/
+                state.settings.gesamt*
+                100
+              )
+            )}
+          </th>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  `;
 }
 
 function renderMissing(){
 
-const t=targets();
+  const k=monthKey();
 
-const d=latest();
+  let cards="";
 
-const total=d.own+d.team;
+  for(
+    const [id,a]
+    of Object.entries(areas)
+  ){
 
-const items=[
+    const d=monthArea(k,id);
+    const t=target(a);
+    const f=Math.max(
+      0,
+      t-d.revenue
+    );
 
-["EIGENER UMSATZ",Math.max(0,t.own-d.own),1],
+    cards+=`
 
-["TEAMUMSATZ",Math.max(0,t.team-d.team),1],
+    <div class="card">
 
-["GESAMTUMSATZ",Math.max(0,t.total-total),1],
+      <small>
+        ${a.name}
+      </small>
 
-["EIGENE KUNDEN",Math.max(0,Math.ceil(t.own/state.settings.perCustomer)-d.ownCustomers),0],
+      <div
+        class="big ${
+          f
+          ?"red"
+          :"green"
+        }"
+      >
 
-["TEAMKUNDEN",Math.max(0,Math.ceil(t.team/state.settings.perCustomer)-d.teamCustomers),0],
+        ${
+          f
+          ?money(f)+" fehlen"
+          :"Ziel erreicht"
+        }
 
-["KONTAKTE",Math.max(0,state.settings.minContacts-d.contacts),0]
+      </div>
 
-];
+      <div class="hint">
 
-missingCards.innerHTML=items.map(x=>`
+        Ist:
+        ${money(d.revenue)}
 
-<div class="metric">
+        · Ziel:
+        ${money(t)}
 
-<span>${x[0]}</span>
+      </div>
 
-<strong class="${x[1]===0?"green":"red"}">
+    </div>
 
-${x[2]?euro(x[1]):x[1]}
+    `;
+  }
 
-</strong>
+  document.getElementById(
+    "missing"
+  ).innerHTML=`
 
-</div>
+  <div class="panel">
 
-`).join("");
+    <h2>
+      Was fehlt noch?
+      · ${monthLabel(k)}
+    </h2>
 
-missingText.innerHTML=`Aktuell fehlen <b>${euro(Math.max(0,t.total-total))}</b> bis zum Gesamtziel. Davon ${euro(Math.max(0,t.own-d.own))} bei dir und ${euro(Math.max(0,t.team-d.team))} im Team.`;
+    <div class="cards">
 
+      ${cards}
+
+    </div>
+
+  </div>
+
+  `;
 }
 
 function renderHistory(){
 
-const ks=Object.keys(state.months).sort();
+  const ks=
+    Object.keys(
+      state.months
+    ).sort();
 
-history.innerHTML=ks.length?
+  let rows=
+    ks.map(k=>{
 
-`<table>
+      let total=0;
 
-<thead>
+      for(
+        const id
+        of Object.keys(areas)
+      ){
+        total+=
+          monthArea(k,id).revenue;
+      }
 
-<tr>
+      return `
 
-<th>Monat</th>
+      <tr>
 
-<th>Eigener Umsatz</th>
+        <td>
+          ${monthLabel(k)}
+        </td>
 
-<th>Teamumsatz</th>
+        <td>
+          ${money(
+            monthArea(
+              k,
+              "own"
+            ).revenue
+          )}
+        </td>
 
-<th>Eigene Kunden</th>
+        <td>
+          ${money(
+            monthArea(
+              k,
+              "zorn"
+            ).revenue
+          )}
+        </td>
 
-<th>Teamkunden</th>
+        <td>
+          ${money(
+            monthArea(
+              k,
+              "biewer"
+            ).revenue
+          )}
+        </td>
 
-<th>Kontakte</th>
+        <td>
+          ${money(
+            monthArea(
+              k,
+              "deckers"
+            ).revenue
+          )}
+        </td>
 
-<th>Serientermine</th>
+        <td>
+          ${money(total)}
+        </td>
 
-</tr>
+      </tr>
 
-</thead>
+      `;
 
-<tbody>
+    }).join("");
 
-${ks.map(k=>{
+  document.getElementById(
+    "history"
+  ).innerHTML=`
 
-const d=state.months[k];
+  <div class="panel">
 
-return `<tr>
+    <h2>
+      Monatsverlauf
+    </h2>
 
-<td>${monthLabel(k)}</td>
+    <p class="hint">
+      Jeder Monat wird separat gespeichert.
+      Die Eingabeseiten arbeiten immer
+      mit dem aktuellen Monat.
+    </p>
 
-<td>${euro(d.own)}</td>
+    <table>
 
-<td>${euro(d.team)}</td>
+      <thead>
 
-<td>${d.ownCustomers}</td>
+        <tr>
+          <th>Monat</th>
+          <th>Eigen</th>
+          <th>Zorn</th>
+          <th>Biewer</th>
+          <th>Deckers</th>
+          <th>Gesamt</th>
+        </tr>
 
-<td>${d.teamCustomers}</td>
+      </thead>
 
-<td>${d.contacts}</td>
+      <tbody>
 
-<td>${d.series}</td>
+        ${
+          rows ||
+          "<tr><td colspan=6>Noch keine Monate gespeichert.</td></tr>"
+        }
 
-</tr>`
+      </tbody>
 
-}).join("")}
+    </table>
 
-</tbody>
+  </div>
 
-</table>`
-
-:'<div class="notice">Noch keine Monate gespeichert.</div>'
-
+  `;
 }
 
-function renderAll(){
+function renderSettings(){
 
-if(document.getElementById("app").style.display==="none")return;
+  document.getElementById(
+    "settings"
+  ).innerHTML=`
 
-if(!month.value)
+  <div class="panel">
 
-month.value=new Date().toISOString().slice(0,7);
+    <h2>
+      Ziele & Annahmen
+    </h2>
 
-loadMonthForm();
+    <div class="grid2">
 
-renderDashboard();
+      <div class="field">
 
-renderMissing();
+        <label>
+          Gesamtziel (€)
+        </label>
 
-renderHistory();
+        <input
+          id="sGesamt"
+          value="${state.settings.gesamt}"
+        >
 
-renderSettings();
+      </div>
 
+      <div class="field">
+
+        <label>
+          Dein Ziel / 30% (€)
+        </label>
+
+        <input
+          id="sOwn"
+          value="${state.settings.own}"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label>
+          Umsatz pro Kunde (€)
+        </label>
+
+        <input
+          id="sCustomer"
+          value="${state.settings.customer}"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label>
+          Abschlussquote (%)
+        </label>
+
+        <input
+          id="sClose"
+          value="${state.settings.close}"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label>
+          Mindestkontakte bis Dezember
+        </label>
+
+        <input
+          id="sContacts"
+          value="${state.settings.contacts}"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label>
+          Vertriebspartner pro Serientermin
+        </label>
+
+        <input
+          id="sPartners"
+          value="${state.settings.partners}"
+        >
+
+      </div>
+
+    </div>
+
+    <button
+      class="btn gold"
+      onclick="saveSettings()"
+    >
+      Einstellungen speichern
+    </button>
+
+    <div
+      class="notice"
+      style="margin-top:12px"
+    >
+
+      Automatische Umsatzverteilung:
+
+      <b>Team Zorn 40%</b>
+      · <b>du 30%</b>
+      · <b>Team Biewer 15%</b>
+      · <b>Team Deckers 15%</b>.
+
+    </div>
+
+  </div>
+
+  <div class="panel">
+
+    <h2>
+      Passwort ändern
+    </h2>
+
+    <div class="grid2">
+
+      <div class="field">
+
+        <label>
+          Benutzername
+        </label>
+
+        <input
+          id="newUser"
+          value="${state.credentials.user}"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label>
+          Neues Passwort
+        </label>
+
+        <input
+          id="newPass"
+          type="password"
+        >
+
+      </div>
+
+    </div>
+
+    <button
+      class="btn gold"
+      onclick="changeCreds()"
+    >
+      Zugang ändern
+    </button>
+
+  </div>
+
+  `;
+}
+
+function saveSettings(){
+
+  state.settings={
+
+    gesamt:num("sGesamt"),
+    own:num("sOwn"),
+    customer:num("sCustomer"),
+    close:num("sClose"),
+    contacts:num("sContacts"),
+    partners:num("sPartners")
+
+  };
+
+  save();
+  renderAll();
+}
+
+function changeCreds(){
+
+  const u=
+    document.getElementById(
+      "newUser"
+    ).value.trim();
+
+  const p=
+    document.getElementById(
+      "newPass"
+    ).value;
+
+  if(!u||!p){
+
+    return alert(
+      "Bitte Benutzername und Passwort eingeben."
+    );
+
+  }
+
+  state.credentials={
+    user:u,
+    pass:p
+  };
+
+  save();
+
+  alert(
+    "Zugang geändert."
+  );
+}
+
+function renderGuide(){
+
+  document.getElementById(
+    "guide"
+  ).innerHTML=`
+
+  <div class="panel">
+
+    <h2>
+      📘 Anleitung
+    </h2>
+
+    <p>
+      1. Wähle oben
+      <b>Eigenvolumen</b>,
+      <b>Team Zorn</b>,
+      <b>Team Biewer</b>
+      oder
+      <b>Team Deckers</b>.
+    </p>
+
+    <p>
+      2. Trage Umsatz, Kunden,
+      Kontakte und Serientermine
+      für den aktuellen Monat ein.
+    </p>
+
+    <p>
+      3. Speichere den Bereich.
+      Die Werte werden getrennt
+      nach Monat und Bereich gespeichert.
+    </p>
+
+    <p>
+      4. Unter
+      <b>Gesamtübersicht</b>
+      werden alle vier Bereiche
+      automatisch zusammengeführt.
+    </p>
+
+    <p>
+      5. Unter
+      <b>Verlauf</b>
+      bleiben die bereits gespeicherten
+      Monate sichtbar.
+    </p>
+
+    <div class="notice">
+
+      Hinweis:
+      Die Daten werden lokal im Browser
+      dieses Geräts gespeichert.
+
+      „Daten sichern“ exportiert
+      eine JSON-Datei als Backup.
+
+    </div>
+
+  </div>
+
+  `;
 }
 
 function exportData(){
 
-const blob=new Blob(
+  const blob=
+    new Blob(
+      [
+        JSON.stringify(
+          state,
+          null,
+          2
+        )
+      ],
+      {
+        type:"application/json"
+      }
+    );
 
-[JSON.stringify(state,null,2)],
+  const a=
+    document.createElement("a");
 
-{type:"application/json"}
+  a.href=
+    URL.createObjectURL(blob);
 
-);
+  a.download=
+    "repraesentanzleiter-backup.json";
 
-const a=document.createElement("a");
+  a.click();
 
-a.href=URL.createObjectURL(blob);
-
-a.download="repraesentanzleiter-daten.json";
-
-a.click();
-
-URL.revokeObjectURL(a.href);
-
+  URL.revokeObjectURL(
+    a.href
+  );
 }
 
-function importData(e){
+function renderAll(){
 
-const f=e.target.files[0];
+  renderDashboard();
 
-if(!f)return;
+  renderArea("own");
+  renderArea("zorn");
+  renderArea("biewer");
+  renderArea("deckers");
 
-const r=new FileReader();
-
-r.onload=()=>{
-
-try{
-
-state=JSON.parse(r.result);
-
-persist();
-
-renderAll();
-
-alert("Daten erfolgreich geladen.");
+  renderGesamt();
+  renderMissing();
+  renderHistory();
+  renderSettings();
+  renderGuide();
 
 }
-
-catch(err){
-
-alert("Datei konnte nicht geladen werden.");
-
-}
-
-};
-
-r.readAsText(f);
-
-}
-
-month.addEventListener("change",loadMonthForm);
 
 </script>
 
