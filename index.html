@@ -3119,5 +3119,28 @@ initLogin();
 
 </script>
 
+
+<!-- Umsatzstruktur-Erweiterung -->
+<div id="umsatzstrukturPanel" style="margin:20px;padding:20px;background:#fff;border-radius:16px">
+<h2>🎯 Umsatzstruktur</h2><div id="umsatzstrukturResult"></div>
+</div>
+<script>
+(function(){
+const n=v=>Number(v)||0,fmt=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n(v));
+function v(a){for(const id of a){let e=document.getElementById(id);if(e)return n(e.value)}return 0}
+function r(){let e=document.getElementById('position')||document.getElementById('myPosition'),p=String(e?e.value:'').toLowerCase();return /trainee|beraterassistent|juniorberater|seniorberater/.test(p)?'100/70':p.includes('teamleiter')?'40/70':'40/70/90'}
+window.renderUmsatzstruktur=function(){
+let b=document.getElementById('umsatzstrukturResult');if(!b)return;
+let a=[['Eigenvolumen',v(['eigenUmsatz','eigenRevenue','revenueEigen'])],['Team Zorn',v(['zornUmsatz','revenueZorn'])],['Team Biewer',v(['biewerUmsatz','revenueBiewer'])],['Team Deckers',v(['deckersUmsatz','revenueDeckers'])]].map(x=>({name:x[0],value:x[1]})),t=a.reduce((s,x)=>s+x.value,0),q=r();
+if(!t){b.innerHTML='Bitte Umsätze eintragen.';return} let s=[...a].sort((x,y)=>y.value-x.value),p1=s[0].value/t,p2=(s[0].value+s[1].value)/t,p3=(s[0].value+s[1].value+s[2].value)/t;
+let h=`<p><b>Regel ${q}</b> · Gesamt: ${fmt(t)}</p><p>${p1<=.4?'✅':'❌'} Stärkster Bereich: ${s[0].name} ${(p1*100).toFixed(1)} % / max. 40 %</p>`;
+if(q!=='100/70')h+=`<p>${p2<=.7?'✅':'❌'} Zwei stärkste: ${(p2*100).toFixed(1)} % / max. 70 %</p>`;
+if(q==='40/70/90')h+=`<p>${p3<=.9?'✅':'❌'} Drei stärkste: ${(p3*100).toFixed(1)} % / max. 90 % · Rest ${((1-p3)*100).toFixed(1)} %</p>`;
+if(q==='100/70'){let x=Math.max(a[1].value,a[2].value,a[3].value)/t;h+=`<p>${x<=.7?'✅':'❌'} Stärkster Teambereich: ${(x*100).toFixed(1)} % / max. 70 %</p>`}
+b.innerHTML=h};
+document.addEventListener('input',()=>setTimeout(renderUmsatzstruktur,0));document.addEventListener('change',()=>setTimeout(renderUmsatzstruktur,0));setTimeout(renderUmsatzstruktur,500);
+})();
+</script>
+
 </body>
 </html>
