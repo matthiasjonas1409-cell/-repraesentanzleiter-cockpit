@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Repräsentanzleiter Cockpit</title>
+<style>
+:root{--bg:#0d0f13;--panel:#191d25;--panel2:#101318;--line:#353a45;--gold:#c9973e;--gold2:#f0c96b;--text:#f6f7f8;--muted:#a9aeba;--red:#e05252;--redbg:#3a1d21;--green:#55c878;--greenbg:#183423}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{padding:18px}.app{max-width:1050px;margin:auto}.top{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;flex-wrap:wrap}.eyebrow{color:var(--gold2);font-size:12px;font-weight:900;letter-spacing:.16em}.title{font-size:34px;font-weight:900;margin:3px 0}.muted{color:var(--muted);font-size:13px}
+.tabs{display:flex;gap:7px;overflow-x:auto;padding:18px 0 12px}.tab{flex:0 0 auto;border:1px solid var(--line);background:#252a33;color:#fff;border-radius:10px;padding:11px 15px;min-height:44px;font-weight:800}.tab.active{background:var(--gold);color:#17130b;border-color:var(--gold)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px;margin-bottom:13px}.grid{display:grid;gap:11px}.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+label{display:block;color:var(--muted);font-size:12px;font-weight:700;margin-bottom:5px}input{width:100%;padding:11px;border-radius:9px;border:1px solid #3b404a;background:#0f1115;color:#fff;font-size:16px}
+.metric{background:var(--panel2);border:1px solid #2e333d;border-radius:12px;padding:14px}.metric span{display:block;color:var(--muted);font-size:11px}.metric strong{display:block;font-size:24px;margin:5px 0}.gold{color:var(--gold2)}
+button{min-height:44px;border:0;border-radius:9px;padding:10px 14px;font-weight:800;background:var(--gold);color:#17130b}.secondary{background:#252a33;color:#fff;border:1px solid var(--line)}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.sectionTitle{font-weight:900;margin-bottom:10px}
+.bar{height:10px;border-radius:20px;background:#2a2f38;overflow:hidden}.fill{height:100%;background:var(--gold);width:0;transition:width .2s}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px 7px;border-bottom:1px solid #30343d;text-align:left}th{color:var(--muted);font-size:11px;text-transform:uppercase}
+.bad{background:var(--redbg)!important;color:#ff8c8c!important}.good{background:var(--greenbg)!important;color:#82e39d!important}.status{font-weight:900}.formula{padding:12px;background:#12151a;border-left:3px solid var(--gold);border-radius:7px;line-height:1.6}
+.page{display:none}.page.active{display:block}
+.chartBox{background:var(--panel2);border:1px solid #2e333d;border-radius:12px;padding:12px}.chartTitle{font-weight:900;margin-bottom:8px}canvas{width:100%;height:330px;display:block}
+@media(max-width:680px){body{padding:12px}.title{font-size:28px}.c2,.c3,.c4{grid-template-columns:1fr}.metric strong{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="app" id="cockpit">
+<div class="top"><div><div class="eyebrow">AB HEUTE</div><div class="title">REPRÄSENTANZLEITER</div><div class="muted">Dein persönliches Ziel- und Führungs-Cockpit</div></div><div class="actions"><button id="exportBtn" class="secondary" type="button">Daten sichern</button><button id="resetBtn" class="secondary" type="button">Ist-Werte löschen</button></div></div>
+
+<nav class="tabs" aria-label="Cockpit-Reiter">
+<button class="tab active" data-page="overview" type="button">Übersicht</button>
+<button class="tab" data-page="monthly" type="button">Monat eintragen</button>
+<button class="tab" data-page="missing" type="button">Was fehlt noch?</button>
+<button class="tab" data-page="history" type="button">Monatsverlauf</button>
+</nav>
+
+<section id="overview" class="page active">
+<div class="panel"><div class="sectionTitle">Zielparameter – jederzeit anpassbar</div><div class="grid c3">
+<div><label>Gesamtziel Umsatz (€)</label><input id="totalTarget" type="number" value="3500000" min="0" step="5000"></div>
+<div><label>Dein eigener Umsatzanteil (€)</label><input id="ownTarget" type="number" value="1050000" min="0" step="5000"></div>
+<div><label>Umsatz pro Kunde (€)</label><input id="rpc" type="number" value="50000" min="1" step="1000"></div>
+<div><label>Abschlussquote (%)</label><input id="rate" type="number" value="50" min="0" max="100" step="1"></div>
+<div><label>Mindestkontakte bis Dezember</label><input id="contactTarget" type="number" value="32" min="0" step="1"></div>
+<div><label>Vertriebspartner pro Serientermin</label><input id="partners" type="number" value="2" min="1" step="1"></div>
+</div></div>
+<div class="grid c4">
+<div class="metric"><span>GESAMTZIEL</span><strong id="goalTotal" class="gold">3.500.000 €</strong></div>
+<div class="metric"><span>DEIN ZIEL</span><strong id="goalOwn" class="gold">1.050.000 €</strong></div>
+<div class="metric"><span>TEAMZIEL</span><strong id="goalTeam" class="gold">2.450.000 €</strong></div>
+<div class="metric"><span>GESAMT-KUNDEN</span><strong id="goalCustomers" class="gold">70</strong></div>
+</div>
+<div class="panel" style="margin-top:13px"><div class="sectionTitle">Rechenweg</div><div id="calc" class="muted"></div><div id="logic" class="formula" style="margin-top:9px"></div></div>
+</section>
+
+<section id="monthly" class="page">
+<div class="panel"><div class="sectionTitle">Monatliche Ist-Werte</div><div class="grid c2">
+<div><label>Monat</label><input id="month" value="September 2026"></div>
+<div><label>Eigener Umsatz Ist (€)</label><input id="ownActual" type="number" value="0" min="0" step="1000"></div>
+<div><label>Eigene Kunden gewonnen</label><input id="ownCustomersActual" type="number" value="0" min="0" step="1"></div>
+<div><label>Kunden angerufen / gesehen</label><input id="contactsActual" type="number" value="0" min="0" step="1"></div>
+<div><label>Team-Umsatz Ist (€)</label><input id="teamActual" type="number" value="0" min="0" step="1000"></div>
+<div><label>Team-Kunden gewonnen</label><input id="teamCustomersActual" type="number" value="0" min="0" step="1"></div>
+<div><label>Serientermine</label><input id="seriesActual" type="number" value="0" min="0" step="1"></div>
+</div></div>
+<div class="grid c3">
+<div class="metric"><span>EIGENER UMSATZ</span><strong id="ownProgress">0%</strong><div class="bar"><div id="ownFill" class="fill"></div></div></div>
+<div class="metric"><span>TEAMUMSATZ</span><strong id="teamProgress">0%</strong><div class="bar"><div id="teamFill" class="fill"></div></div></div>
+<div class="metric"><span>GESAMTUMSATZ</span><strong id="totalProgress">0%</strong><div class="bar"><div id="totalFill" class="fill"></div></div></div>
+</div>
+<div class="panel" style="margin-top:13px"><div class="sectionTitle">Soll / Ist / Fehlbetrag</div><div style="overflow:auto"><table><thead><tr><th>KPI</th><th>Soll</th><th>Ist</th><th>Noch fehlt</th><th>Status</th></tr></thead><tbody id="table"></tbody></table></div></div>
+</section>
+
+<section id="missing" class="page">
+<div class="panel"><div class="sectionTitle">Was fehlt noch?</div><div class="grid c3">
+<div id="rOwn" class="metric bad"><span>NOCH EIGENER UMSATZ</span><strong>1.050.000 €</strong></div>
+<div id="rTeam" class="metric bad"><span>NOCH TEAMUMSATZ</span><strong>2.450.000 €</strong></div>
+<div id="rTotal" class="metric bad"><span>NOCH GESAMTUMSATZ</span><strong>3.500.000 €</strong></div>
+<div id="rOwnC" class="metric bad"><span>NOCH EIGENE KUNDEN</span><strong>21</strong></div>
+<div id="rTeamC" class="metric bad"><span>NOCH TEAMKUNDEN</span><strong>49</strong></div>
+<div id="rContacts" class="metric bad"><span>NOCH KONTAKTE</span><strong>42</strong></div>
+</div><div id="missingText" class="formula" style="margin-top:12px"></div></div>
+<div class="panel"><div class="sectionTitle">Ampel</div><div class="grid c3">
+<div id="statusOwn" class="metric bad"></div><div id="statusTeam" class="metric bad"></div><div id="statusTotal" class="metric bad"></div>
+</div></div>
+</section>
+
+<section id="history" class="page">
+<div class="panel"><div class="sectionTitle">Monatsverlauf</div><div class="muted">Aktuellen Monat eintragen und speichern. Jeder gespeicherte Monat erscheint in der Tabelle und in der Grafik.</div><div class="actions" style="margin-top:10px"><button id="saveMonth" type="button">Monat speichern</button><button id="deleteHistory" class="secondary" type="button">Verlauf löschen</button></div></div>
+<div class="panel"><div class="chartBox"><div class="chartTitle">Eigener Umsatz – Verlauf vs. Ziel</div><canvas id="chart" width="900" height="330"></canvas></div></div>
+<div class="panel"><div style="overflow:auto"><table><thead><tr><th>Monat</th><th>Eigener Umsatz</th><th>Teamumsatz</th><th>Eigene Kunden</th><th>Teamkunden</th><th>Kontakte</th><th>Serientermine</th></tr></thead><tbody id="historyTable"></tbody></table></div></div>
+</section>
+
+<div id="message" class="muted"></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const n=id=>Math.max(0,Number($(id).value)||0);
+const money=x=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(x);
+const int=x=>new Intl.NumberFormat('de-DE',{maximumFractionDigits:0}).format(x);
+let history=[];
+
+function targets(){
+ const total=n('totalTarget'), own=n('ownTarget'), rpc=n('rpc'), rate=Math.min(100,n('rate'))/100, contacts=n('contactTarget');
+ const ownC=rpc?Math.ceil(own/rpc):0, team=Math.max(0,total-own), teamC=rpc?Math.ceil(team/rpc):0, needed=rate?Math.ceil(ownC/rate):0;
+ return {total,own,rpc,rate,contacts,ownC,team,teamC,needed};
+}
+function actual(){
+ return {own:n('ownActual'),ownC:n('ownCustomersActual'),contacts:n('contactsActual'),team:n('teamActual'),teamC:n('teamCustomersActual'),series:n('seriesActual')};
+}
+function setBox(id,label,value,target){
+ const e=$(id), done=value>=target;
+ e.classList.remove('bad','good');e.classList.add(done?'good':'bad');
+ e.innerHTML='<span>'+label+'</span><strong>'+ (done?'ZIEL ERREICHT':'NOCH OFFEN') +'</strong><span>'+(done?money(value-target)+' über Ziel':money(target-value)+' fehlen noch')+'</span>';
+}
+function update(){
+ const t=targets(),a=actual(),totalA=a.own+a.team;
+ $('goalTotal').textContent=money(t.total);$('goalOwn').textContent=money(t.own);$('goalTeam').textContent=money(t.team);$('goalCustomers').textContent=int(t.ownC+t.teamC);
+ $('calc').innerHTML='<b style="color:#fff">Dein Ziel:</b> '+money(t.own)+' ÷ '+money(t.rpc)+' = <b style="color:#f0c96b">'+t.ownC+' Kunden</b>.<br><b style="color:#fff">Teamziel:</b> '+money(t.total)+' − '+money(t.own)+' = <b style="color:#f0c96b">'+money(t.team)+'</b> → <b style="color:#f0c96b">'+t.teamC+' Team-Kunden</b>.';
+ $('logic').innerHTML='Bei '+Math.round(t.rate*100)+'% Abschlussquote brauchst du für '+t.ownC+' eigene Abschlüsse rechnerisch ca. <b style="color:#f0c96b">'+t.needed+' Kontakte</b>. Dein ursprüngliches Mindestziel von '+t.contacts+' Kontakten reicht dafür bei 50% rechnerisch nicht aus.';
+ const ownP=t.own?100*a.own/t.own:0,teamP=t.team?100*a.team/t.team:0,totalP=t.total?100*totalA/t.total:0;
+ [['ownProgress',ownP],['teamProgress',teamP],['totalProgress',totalP]].forEach(x=>$(x[0]).textContent=Math.round(x[1])+'%');
+ [['ownFill',ownP],['teamFill',teamP],['totalFill',totalP]].forEach(x=>$(x[0]).style.width=Math.min(100,Math.max(0,x[1]))+'%');
+ const rows=[
+ ['Eigener Umsatz',money(t.own),money(a.own),money(Math.max(0,t.own-a.own)),ownP],
+ ['Eigene Kunden',int(t.ownC),int(a.ownC),int(Math.max(0,t.ownC-a.ownC)),100*a.ownC/(t.ownC||1)],
+ ['Kontakte / gesehen',int(t.contacts),int(a.contacts),int(Math.max(0,t.contacts-a.contacts)),100*a.contacts/(t.contacts||1)],
+ ['Team-Umsatz',money(t.team),money(a.team),money(Math.max(0,t.team-a.team)),teamP],
+ ['Team-Kunden',int(t.teamC),int(a.teamC),int(Math.max(0,t.teamC-a.teamC)),100*a.teamC/(t.teamC||1)],
+ ['Gesamtumsatz',money(t.total),money(totalA),money(Math.max(0,t.total-totalA)),totalP],
+ ['Serientermine','1 / Woche',int(a.series),'—',a.series>=1?100:0]
+ ];
+ $('table').innerHTML=rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td class="'+(r[4]>=100?'good':'bad')+'">'+r[2]+'</td><td>'+r[3]+'</td><td class="status '+(r[4]>=100?'good':'bad')+'">'+(r[4]>=100?'ERREICHT':'OFFEN')+'</td></tr>').join('');
+ const remOwn=Math.max(0,t.own-a.own),remTeam=Math.max(0,t.team-a.team),remTotal=Math.max(0,t.total-totalA),remOwnC=Math.max(0,t.ownC-a.ownC),remTeamC=Math.max(0,t.teamC-a.teamC),remContacts=Math.max(0,t.needed-a.contacts);
+ $('rOwn').querySelector('strong').textContent=money(remOwn);$('rTeam').querySelector('strong').textContent=money(remTeam);$('rTotal').querySelector('strong').textContent=money(remTotal);$('rOwnC').querySelector('strong').textContent=int(remOwnC);$('rTeamC').querySelector('strong').textContent=int(remTeamC);$('rContacts').querySelector('strong').textContent=int(remContacts);
+ [['rOwn',remOwn],['rTeam',remTeam],['rTotal',remTotal],['rOwnC',remOwnC],['rTeamC',remTeamC],['rContacts',remContacts]].forEach(x=>{const e=$(x[0]);e.classList.remove('bad','good');e.classList.add(x[1]<=0?'good':'bad')});
+ $('missingText').innerHTML=remTotal<=0?'🎯 <b>Gesamtziel erreicht!</b> Du liegst bei '+money(totalA)+' und damit '+money(totalA-t.total)+' über dem Ziel.':'Aktuell fehlen <b>'+money(remTotal)+'</b> bis zum Gesamtziel. Davon '+money(remOwn)+' bei dir und '+money(remTeam)+' im Team.';
+ setBox('statusOwn','DEIN UMSATZ',a.own,t.own);setBox('statusTeam','TEAMUMSATZ',a.team,t.team);setBox('statusTotal','GESAMTZIEL',totalA,t.total);
+ renderHistory();
+}
+function renderHistory(){
+ const body=$('historyTable');
+ body.innerHTML=history.length?history.map(x=>'<tr><td>'+x.month+'</td><td>'+money(x.own)+'</td><td>'+money(x.team)+'</td><td>'+int(x.ownC)+'</td><td>'+int(x.teamC)+'</td><td>'+int(x.contacts)+'</td><td>'+int(x.series)+'</td></tr>').join(''):'<tr><td colspan="7" class="muted">Noch kein Monat gespeichert.</td></tr>';
+ drawChart();
+}
+function drawChart(){
+ const c=$('chart'),ctx=c.getContext('2d'),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
+ const t=targets(),data=history,max=Math.max(t.own,1,...data.map(x=>x.own)),L=65,R=25,T=28,B=55,plotW=w-L-R,plotH=h-T-B;
+ ctx.font='12px -apple-system, sans-serif';ctx.strokeStyle='#343842';ctx.fillStyle='#a9aeba';
+ for(let i=0;i<=4;i++){let v=max*i/4,y=T+plotH-(v/max)*plotH;ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(w-R,y);ctx.stroke();ctx.fillText(money(v).replace(' €','€'),5,y+4)}
+ let ty=T+plotH-(t.own/max)*plotH;ctx.strokeStyle='#d7dbe2';ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(L,ty);ctx.lineTo(w-R,ty);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#d7dbe2';ctx.fillText('Ziel '+money(t.own).replace(' €','€'),w-R-110,ty-7);
+ if(!data.length){ctx.fillStyle='#a9aeba';ctx.textAlign='center';ctx.fillText('Speichere deinen ersten Monat, um die Grafik zu sehen.',w/2,h/2);ctx.textAlign='left';return}
+ const x=i=>data.length===1?w/2:L+i*(plotW/(data.length-1)),y=v=>T+plotH-(v/max)*plotH;
+ ctx.strokeStyle='#c9973e';ctx.lineWidth=4;ctx.beginPath();data.forEach((d,i)=>{i?ctx.lineTo(x(i),y(d.own)):ctx.moveTo(x(i),y(d.own))});ctx.stroke();
+ data.forEach((d,i)=>{ctx.fillStyle='#c9973e';ctx.beginPath();ctx.arc(x(i),y(d.own),5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 11px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText(money(d.own).replace(' €','€'),x(i),y(d.own)-10);ctx.fillStyle='#a9aeba';ctx.font='11px -apple-system,sans-serif';ctx.fillText(d.month,x(i),h-18)});ctx.textAlign='left';
+}
+document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',function(){document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));btn.classList.add('active');$(btn.dataset.page).classList.add('active');update();}));
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input',update));
+$('saveMonth').addEventListener('click',function(){const month=$('month').value.trim()||'Monat';const a=actual();const item={month,...a};const idx=history.findIndex(x=>x.month.toLowerCase()===month.toLowerCase());if(idx>=0)history[idx]=item;else history.push(item);$('message').textContent=month+' gespeichert.';update();});
+$('deleteHistory').addEventListener('click',function(){history=[];update();$('message').textContent='Monatsverlauf gelöscht.'});
+$('resetBtn').addEventListener('click',function(){['ownActual','ownCustomersActual','contactsActual','teamActual','teamCustomersActual','seriesActual'].forEach(id=>$(id).value=0);update()});
+$('exportBtn').addEventListener('click',function(){const data={ziele:{total:n('totalTarget'),own:n('ownTarget'),rpc:n('rpc'),rate:n('rate'),contactTarget:n('contactTarget'),partners:n('partners')},monat:{month:$('month').value,...actual()},verlauf:history};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='repraesentanzleiter-daten.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
+update();
+})();
+</script>
+</body>
+</html>
