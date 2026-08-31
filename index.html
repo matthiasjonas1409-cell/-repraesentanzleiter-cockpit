@@ -1469,6 +1469,7 @@ footer{
               <th>Mindest Teamvolumen</th>
               <th>Qualitätsquote max.</th>
               <th>Provisionseinbehalt</th>
+              <th>Aufteilungsregel</th>
               <th></th>
             </tr>
           </thead>
@@ -1580,6 +1581,7 @@ let db = {
   positions:[
     {
       name:"Seniorberater",
+      rule:"100/70",
       rate:17,
       eigen:225000,
       team:750000,
@@ -1588,6 +1590,7 @@ let db = {
     },
     {
       name:"Juniorberater",
+      rule:"100/70",
       rate:14,
       eigen:105000,
       team:350000,
@@ -1596,6 +1599,7 @@ let db = {
     },
     {
       name:"Beraterassistent",
+      rule:"100/70",
       rate:10,
       eigen:105000,
       team:350000,
@@ -1604,6 +1608,7 @@ let db = {
     },
     {
       name:"Trainee",
+      rule:"100/70",
       rate:7,
       eigen:0,
       team:0,
@@ -1612,6 +1617,7 @@ let db = {
     },
     {
       name:"Teamleiter",
+      rule:"40/70",
       rate:20,
       eigen:0,
       team:1750000,
@@ -1620,6 +1626,7 @@ let db = {
     },
     {
       name:"Repräsentanzleiter",
+      rule:"40/70/90",
       rate:22.5,
       eigen:0,
       team:3500000,
@@ -1628,6 +1635,7 @@ let db = {
     },
     {
       name:"Branch Manager",
+      rule:"40/70/90",
       rate:25.5,
       eigen:0,
       team:7500000,
@@ -1636,6 +1644,7 @@ let db = {
     },
     {
       name:"Regional Manager",
+      rule:"40/70/90",
       rate:28,
       eigen:0,
       team:15000000,
@@ -1644,6 +1653,7 @@ let db = {
     },
     {
       name:"Divisional Manager",
+      rule:"40/70/90",
       rate:30.5,
       eigen:0,
       team:30000000,
@@ -1652,6 +1662,7 @@ let db = {
     },
     {
       name:"General Manager",
+      rule:"40/70/90",
       rate:30.5,
       eigen:0,
       team:60000000,
@@ -1678,6 +1689,16 @@ function loadDB(){
         settings:{...db.settings,...parsed.settings},
         teamPositions:{...db.teamPositions,...parsed.teamPositions}
       };
+
+      // Bestehende gespeicherte Positionen automatisch um die Aufteilungsregel ergänzen.
+      db.positions=(db.positions||[]).map(p=>{
+        if(!p.rule){
+          const n=String(p.name||"").toLowerCase();
+          p.rule=["trainee","beraterassistent","juniorberater","seniorberater"].some(x=>n.includes(x)) ? "100/70" :
+                 n.includes("teamleiter") ? "40/70" : "40/70/90";
+        }
+        return p;
+      });
 
     }catch(e){
       console.log("Daten konnten nicht geladen werden");
@@ -2952,7 +2973,12 @@ function renderPositionTable(){
 
   const tbody=document.getElementById("positionTable");
 
-  tbody.innerHTML=db.positions.map((p,index)=>`
+  tbody.innerHTML=db.positions.map((p,index)=>{
+    if(!p.rule){
+      const n=String(p.name||"").toLowerCase();
+      p.rule=["trainee","beraterassistent","juniorberater","seniorberater"].some(x=>n.includes(x)) ? "100/70" : (n.includes("teamleiter") ? "40/70" : "40/70/90");
+    }
+    return `
 
     <tr>
 
@@ -2987,12 +3013,20 @@ function renderPositionTable(){
       </td>
 
       <td>
+        <select onchange="updatePosition(${index},'rule',this.value); updateEverything()">
+          <option value="100/70" ${p.rule==="100/70"?"selected":""}>100/70</option>
+          <option value="40/70" ${p.rule==="40/70"?"selected":""}>40/70</option>
+          <option value="40/70/90" ${p.rule==="40/70/90"?"selected":""}>40/70/90</option>
+        </select>
+      </td>
+
+      <td>
         <button class="btn red" onclick="deletePosition(${index})">×</button>
       </td>
 
     </tr>
 
-  `).join("");
+  `}).join("");
 
 }
 
@@ -3010,6 +3044,7 @@ function addPosition(){
 
   db.positions.push({
     name:"Neue Position",
+    rule:"40/70/90",
     rate:0,
     eigen:0,
     team:0,
@@ -3040,7 +3075,7 @@ function savePositions(){
 
   updateEverything();
 
-  alert("Positionen und Vergütungswerte gespeichert.");
+  alert("Positionen, Vergütungswerte und Aufteilungsregeln gespeichert.");
 
 }
 
@@ -3164,11 +3199,10 @@ initLogin();
   function getRule(){
     if(typeof db==="undefined" || typeof getPosition!=="function") return "40/70/90";
     const pos=getPosition(db.myPosition||"");
+    // Die Regel kommt direkt aus „Positionen & Vergütung“.
+    if(pos && pos.rule) return pos.rule;
     const name=String((pos&&pos.name)||db.myPosition||"").toLowerCase();
-
-    if(["trainee","beraterassistent","juniorberater","seniorberater"].some(x=>name.includes(x))){
-      return "100/70";
-    }
+    if(["trainee","beraterassistent","juniorberater","seniorberater"].some(x=>name.includes(x))) return "100/70";
     if(name.includes("teamleiter")) return "40/70";
     return "40/70/90";
   }
@@ -3216,7 +3250,7 @@ initLogin();
     const top1=sorted[0].value/total;
     const top2=(sorted[0].value+sorted[1].value)/total;
     const top3=(sorted[0].value+sorted[1].value+sorted[2].value)/total;
-    const teamTotal=total-data.eigen.umsatz;
+    const teamTotal=total-Number(data.eigen?.umsatz||0);
     const teamShare=teamTotal/total;
 
     ruleText.innerHTML='<b>Aktiver Monat: '+result.month+'</b> · Regel für deine Position: <b>'+rule+'</b> · Gesamt: <b>'+euroUS(total)+'</b>';
@@ -3293,3 +3327,102 @@ initLogin();
 
 </body>
 </html>
+
+
+<!-- SICHTBARKEITS-FIX: Umsatzstruktur immer im Dark Mode lesbar -->
+<style id="umsatzstrukturSichtbarkeitsFix">
+#umsatzstrukturPanel,
+#umsatzstrukturPanel *{
+  box-sizing:border-box !important;
+}
+
+#umsatzstrukturPanel{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  background:#202630 !important;
+  color:#f5f6f7 !important;
+  border:1px solid #303641 !important;
+  border-radius:14px !important;
+  padding:18px !important;
+  margin:16px 18px 30px !important;
+  box-shadow:none !important;
+}
+
+#umsatzstrukturPanel h2{
+  color:#f5f6f7 !important;
+  background:transparent !important;
+  margin:0 0 8px !important;
+}
+
+#umsatzstrukturPanel .umsatzRule,
+#umsatzstrukturPanel .label,
+#umsatzstrukturPanel .umsatzCard div{
+  color:#a9afbb !important;
+  background:transparent !important;
+}
+
+#umsatzstrukturPanel .umsatzGrid{
+  background:transparent !important;
+}
+
+#umsatzstrukturPanel .umsatzCard{
+  background:#101318 !important;
+  color:#f5f6f7 !important;
+  border:1px solid #303641 !important;
+}
+
+#umsatzstrukturPanel .umsatzCard strong{
+  color:#f5f6f7 !important;
+}
+
+#umsatzstrukturPanel .umsatzCheck{
+  background:#101318 !important;
+  color:#f5f6f7 !important;
+  border-top:1px solid #303641 !important;
+  border-right:1px solid #303641 !important;
+  border-bottom:1px solid #303641 !important;
+}
+
+#umsatzstrukturPanel .umsatzCheck.ok{
+  color:#d9f5e2 !important;
+}
+
+#umsatzstrukturPanel .umsatzCheck.bad{
+  color:#ffd9d9 !important;
+}
+
+#umsatzstrukturPanel .umsatzList,
+#umsatzstrukturPanel .umsatzList li{
+  background:#101318 !important;
+  color:#f5f6f7 !important;
+  border-color:#303641 !important;
+}
+
+#umsatzstrukturPanel b,
+#umsatzstrukturPanel strong{
+  color:#f5f6f7 !important;
+}
+
+@media print{
+  #umsatzstrukturPanel{
+    background:#fff !important;
+    color:#111 !important;
+    margin:0 !important;
+  }
+  #umsatzstrukturPanel h2,
+  #umsatzstrukturPanel .umsatzRule,
+  #umsatzstrukturPanel .label,
+  #umsatzstrukturPanel .umsatzCard,
+  #umsatzstrukturPanel .umsatzCard strong,
+  #umsatzstrukturPanel .umsatzCard div,
+  #umsatzstrukturPanel .umsatzCheck,
+  #umsatzstrukturPanel .umsatzList,
+  #umsatzstrukturPanel .umsatzList li,
+  #umsatzstrukturPanel b,
+  #umsatzstrukturPanel strong{
+    background:#fff !important;
+    color:#111 !important;
+  }
+}
+</style>
